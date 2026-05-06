@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <!-- Chatbot Security Groups -->
+        
+        <!-- Chatbot Guest Group - Base level -->
+        <record id="group_chatbot_guest" model="res.groups">
+            <field name="name">Chatbot Guest</field>
+            <field name="category_id" ref="base.module_category_services"/>
+            <field name="comment">No access to chatbot features</field>
+        </record>
+        
+        <!-- Chatbot User Group -->
+        <record id="group_chatbot_user" model="res.groups">
+            <field name="name">Chatbot User</field>
+            <field name="category_id" ref="base.module_category_services"/>
+            <field name="comment">Basic access to customer inquiries and conversations only</field>
+            <field name="implied_ids" eval="[(4, ref('group_chatbot_guest'))]"/>
+        </record>
+        
+        <!-- Chatbot Editor Group -->
+        <record id="group_chatbot_editor" model="res.groups">
+            <field name="name">Chatbot Editor</field>
+            <field name="category_id" ref="base.module_category_services"/>
+            <field name="comment">Access to customer inquiries and conversations but not webhook logs or statistics</field>
+            <field name="implied_ids" eval="[(4, ref('group_chatbot_user'))]"/>
+        </record>
+        
+        <!-- Chatbot Manager Group -->
+        <record id="group_chatbot_manager" model="res.groups">
+            <field name="name">Chatbot Manager</field>
+            <field name="category_id" ref="base.module_category_services"/>
+            <field name="comment">Full access to all chatbot features including configuration, webhook logs, and statistics</field>
+            <field name="implied_ids" eval="[(4, ref('group_chatbot_editor'))]"/>
+        </record>
+        
+        <!-- Assign Manager group to System Admin -->
+        <record id="base.user_admin" model="res.users">
+            <field name="groups_id" eval="[(4, ref('group_chatbot_manager'))]"/>
+        </record>
+        
+    </data>
+</odoo>

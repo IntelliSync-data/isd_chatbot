@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu - Visible to User and above -->
+    <menuitem id="menu_chatbot_main" 
+              name="Chatbot" 
+              sequence="100" 
+              web_icon="isd_chatbot,static/description/icon.png"
+              groups="group_chatbot_user"/>
+    
+    <!-- Configuration Menu - Manager and Editor -->
+    <menuitem id="menu_chatbot_config" 
+              name="Configuration" 
+              parent="menu_chatbot_main" 
+              sequence="20"
+              groups="group_chatbot_editor"/>
+    
+    <menuitem id="menu_chatbot_global_settings" 
+              name="Global Settings" 
+              parent="menu_chatbot_config" 
+              action="action_chatbot_configuration" 
+              sequence="5"
+              groups="group_chatbot_editor"/>
+    
+    <menuitem id="menu_chatbot_config_questions" 
+              name="Q and A Configuration" 
+              parent="menu_chatbot_config" 
+              action="action_chatbot_config" 
+              sequence="10"
+              groups="group_chatbot_editor"/>
+    
+    <!-- Customer Inquiries Menu - User and above -->
+    <menuitem id="menu_customer_inquiries" 
+              name="Customer Inquiries" 
+              parent="menu_chatbot_main" 
+              action="action_customer_inquiry" 
+              sequence="5"
+              groups="group_chatbot_user"/>
+    
+    <!-- Conversations Menu - User and above -->
+    <menuitem id="menu_chatbot_conversation"
+              name="Conversations"
+              parent="menu_chatbot_main"
+              action="action_chatbot_conversation"
+              sequence="10"
+              groups="group_chatbot_user"/>
+    
+    <!-- Webhook Logs Menu - Manager only -->
+    <menuitem id="menu_webhook_logs" 
+              name="Webhook Logs" 
+              parent="menu_chatbot_main" 
+              action="action_webhook_log" 
+              sequence="15"
+              groups="group_chatbot_manager"/>
+    
+    <!-- Webhook Statistics Menu - Manager only -->
+    <menuitem id="menu_webhook_stats" 
+              name="Webhook Statistics" 
+              parent="menu_chatbot_main" 
+              action="action_webhook_stats" 
+              sequence="16"
+              groups="group_chatbot_manager"/>
+    
+    <!-- Integration Menu - Manager only -->
+    <menuitem id="menu_chatbot_integration" 
+              name="Integration" 
+              parent="menu_chatbot_main" 
+              sequence="30"
+              groups="group_chatbot_manager"/>
+</odoo>
+

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit from the base settings form -->
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.isd_chatbot</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="10"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Add our app section to the form -->
+            <xpath expr="//form" position="inside">
+                <app data-string="Chatbot" string="Chatbot" name="isd_chatbot">
+                    <!-- Response Settings Section -->
+                    <block title="Response Settings" id="chatbot_response_settings">
+                        <setting string="Default Message" help="Message when no question pattern matches">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_default_message" class="w-100" placeholder="Enter default message..."/>
+                                </div>
+                            </div>
+                        </setting>
+                        
+                        <setting string="Response Type" help="How to handle when no question pattern matches">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_response_type" widget="radio" options="{'horizontal': true}"/>
+                                </div>
+                            </div>
+                        </setting>
+                        
+                        <setting string="Prompt Message" help="Guidance message for prompt mode" invisible="chatbot_response_type != 'prompt'">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_prompt_message" class="w-100" placeholder="Enter prompt message..."/>
+                                </div>
+                            </div>
+                        </setting>
+                        
+                        <setting string="End Message" help="Message shown when conversation ends (after collecting complete information)">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_end_message" class="w-100" placeholder="Enter end message..."/>
+                                </div>
+                            </div>
+                        </setting>
+
+                        <setting string="Missing Contact Message" help="Message shown when user submits information without email or phone">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_missing_contact_message" class="w-100" placeholder="Enter missing contact message..."/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    
+                    <!-- OpenAI API Settings Section -->
+                    <block title="OpenAI API Settings" id="chatbot_openai_settings">
+                        <setting string="Enable OpenAI" help="Use OpenAI API for analyzing customer inquiries">
+                            <field name="chatbot_openai_enabled"/>
+                        </setting>
+                        
+                        <setting string="OpenAI Model" help="Select which OpenAI model to use for analysis" invisible="chatbot_openai_enabled == False">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_openai_model"/>
+                                </div>
+                            </div>
+                        </setting>
+                        
+                        <setting string="OpenAI API Key" help="Your OpenAI API key for authentication (stored securely as system parameter)" invisible="chatbot_openai_enabled == False">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_openai_api_key" password="True"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    
+                    <!-- NLP Settings Section -->
+                    <block title="NLP Settings" id="chatbot_nlp_settings">
+                        <setting string="Language Model" help="spaCy language model for question matching">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_language_model"/>
+                                </div>
+                            </div>
+                        </setting>
+                        
+                        <setting string="Similarity Threshold" help="Minimum similarity score required to match a pattern (between 0 and 1)">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_threshold"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+
+                    <!-- Partner Integration Settings Section -->
+                    <block title="Partner Integration Settings" id="chatbot_partner_integration_settings">
+                        <setting string="Zalo OA App Id" help="Your Zalo OA App ID for authentication">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_zalo_oa_app_id"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Zalo OA API Secret Key" help="Your Zalo OA API secret key for authentication">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_zalo_oa_secret_key" password="True"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Zalo OA API Token" help="Your Zalo OA API token for authentication">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_zalo_oa_api_token" password="True"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Zalo OA API Refresh Token" help="Your Zalo OA API refresh token for authentication">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_zalo_oa_api_refresh_token" password="True"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Chatbot Settings Menu Action -->
+    <record id="action_chatbot_configuration" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'isd_chatbot', 'bin_size': False}</field>
+    </record>
+</odoo>

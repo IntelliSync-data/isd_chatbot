@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Chatbot Config List View: Chỉ hiển thị các dòng Q&A thông thường -->
+    <record id="view_chatbot_config_list" model="ir.ui.view">
+        <field name="name">chatbot.config.list</field>
+        <field name="model">chatbot.config</field>
+        <field name="arch" type="xml">
+            <list string="Chatbot Q and A Configuration">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="question"/>
+                <field name="answer"/>
+                <field name="threshold"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Chatbot Config Form View cho Q&A thông thường -->
+    <record id="view_chatbot_config_form" model="ir.ui.view">
+        <field name="name">chatbot.config.form</field>
+        <field name="model">chatbot.config</field>
+        <field name="arch" type="xml">
+            <form string="Chatbot Configuration">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="threshold"/>
+                        </group>
+                        <group>
+                            <field name="language_model"/>
+                        </group>
+                    </group>
+                    <group string="Question and Answer">
+                        <field name="question" widget="text"/>
+                        <field name="answer" widget="text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Chatbot Global Settings Form View -->
+    <record id="view_chatbot_global_settings_form" model="ir.ui.view">
+        <field name="name">chatbot.global.settings.form</field>
+        <field name="model">chatbot.config</field>
+        <field name="arch" type="xml">
+            <form string="Chatbot Settings" create="false" delete="false" duplicate="false">
+                <header>
+                    <button string="Save" type="object" name="save_settings" class="oe_highlight" data-hotkey="s" special="save"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="z"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h2>Response Settings</h2>
+                        <div class="row mt16" style="background-color: #f9f9f9; padding: 16px; border-radius: 5px;">
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="default_message" class="fw-bold" style="font-size: 15px; display: block;">Default Message</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        Message when no question pattern matches
+                                    </div>
+                                    <field name="default_message" widget="text" placeholder="Enter default message..."/>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="response_type" class="fw-bold" style="font-size: 15px; display: block;">Loại phản hồi khi không match</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        Cách xử lý khi không tìm thấy câu trả lời phù hợp
+                                    </div>
+                                    <field name="response_type" widget="radio" options="{'horizontal': true}"/>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 mb-4" invisible_if="response_type != 'prompt'">
+                                <div>
+                                    <label for="prompt_message" class="fw-bold" style="font-size: 15px; display: block;">Prompt Message</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        Tin nhắn hướng dẫn khi sử dụng chế độ prompt
+                                    </div>
+                                    <field name="prompt_message" widget="text" placeholder="Enter prompt message..."/>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 mb-4">
+                                <div>
+                                    <label for="end_message" class="fw-bold" style="font-size: 15px; display: block;">End Message</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        Tin nhắn kết thúc cuộc hội thoại khi đã thu thập đủ thông tin (tên, email, số điện thoại)
+                                    </div>
+                                    <field name="end_message" widget="text" placeholder="Enter end message..."/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h2 style="margin-top: 20px;">OpenAI API Settings</h2>
+                        <div class="row mt16" style="background-color: #f9f9f9; padding: 16px; border-radius: 5px;">
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="openai_enabled" class="fw-bold" style="font-size: 15px; display: block;">Enable OpenAI</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        Enable OpenAI API integration for advanced text analysis
+                                    </div>
+                                    <field name="openai_enabled"/>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="openai_model" class="fw-bold" style="font-size: 15px; display: block;">OpenAI Model</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        Select which OpenAI model to use for analysis
+                                    </div>
+                                    <field name="openai_model" invisible-if="not openai_enabled"/>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mb-4">
+                                <div>
+                                    <label for="openai_api_key" class="fw-bold" style="font-size: 15px; display: block;">OpenAI API Key</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        Your OpenAI API key for authentication (stored securely as system parameter)
+                                    </div>
+                                    <field name="openai_api_key" password="True" invisible-if="not openai_enabled"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h2 style="margin-top: 20px;">NLP Settings</h2>
+                        <div class="row mt16" style="background-color: #f9f9f9; padding: 16px; border-radius: 5px;">
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="language_model" class="fw-bold" style="font-size: 15px; display: block;">Language Model</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        spaCy language model for question matching
+                                    </div>
+                                    <field name="language_model"/>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="threshold" class="fw-bold" style="font-size: 15px; display: block;">Similarity Threshold</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        Minimum similarity score required to match a pattern (between 0 and 1)
+                                    </div>
+                                    <field name="threshold"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 style="margin-top: 20px;">Partner Settings</h2>
+                        <div class="row mt16" style="background-color: #f9f9f9; padding: 16px; border-radius: 5px;">
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="zalo_oa_app_id" class="fw-bold" style="font-size: 15px; display: block;">Zalo OA App ID</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        App ID for Zalo OA integration
+                                    </div>
+                                    <field name="zalo_oa_app_id"/>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="zalo_oa_api_secret_key" class="fw-bold" style="font-size: 15px; display: block;">Zalo OA API Token</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        API Token for Zalo OA integration
+                                    </div>
+                                    <field name="zalo_oa_api_secret_key"/>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="zalo_oa_api_token" class="fw-bold" style="font-size: 15px; display: block;">Zalo OA API Token</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        API Token for Zalo OA integration
+                                    </div>
+                                    <field name="zalo_oa_api_token"/>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="zalo_oa_api_refresh_token" class="fw-bold" style="font-size: 15px; display: block;">Zalo OA API Refresh Token</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        API Refresh Token for Zalo OA integration
+                                    </div>
+                                    <field name="zalo_oa_api_refresh_token"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 style="margin-top: 20px;">Survey Integration</h2>
+                        <div class="row mt16" style="background-color: #f9f9f9; padding: 16px; border-radius: 5px;">
+                            <div class="col-12 mb-4">
+                                <div>
+                                    <label for="survey_id" class="fw-bold" style="font-size: 15px; display: block;">Default Survey Template</label>
+                                    <div style="color: #6c757d; margin-bottom: 8px;">
+                                        Survey template to use when inviting users from customer inquiries.
+                                        Configure field mappings in the "Survey Mappings" menu.
+                                    </div>
+                                    <field name="survey_id" options="{'no_create': True}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Chatbot Q&A Configuration Action -->
+    <record id="action_chatbot_config" model="ir.actions.act_window">
+        <field name="name">Q and A Configuration</field>
+        <field name="res_model">chatbot.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('name', '!=', 'Default Settings')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first chatbot Q and A configuration!
+            </p>
+            <p>
+                Configure question patterns and their corresponding answers.
+                The chatbot will use spaCy to match user questions with your patterns.
+            </p>
+        </field>
+    </record>
+    
+    <!-- Server action to ensure Default Settings exist and open them -->
+    <record id="action_server_open_global_settings" model="ir.actions.server">
+        <field name="name">Open Global Settings</field>
+        <field name="model_id" ref="model_chatbot_config"/>
+        <field name="binding_model_id" ref="model_chatbot_config"/>
+        <field name="state">code</field>
+        <field name="code">
+# Check if Default Settings exists
+default_settings = env['chatbot.config'].search([('name', '=', 'Default Settings')], limit=1)
+if not default_settings:
+    # Create it
+    default_settings = env['chatbot.config'].create({
+        'name': 'Default Settings',
+        'question': 'default',
+        'answer': 'Default response',
+        'threshold': 0.8,
+        'active': True,
+    })
+
+# Return action to open the settings
+action = {
+    'name': 'Global Settings',
+    'view_mode': 'form',
+    'res_model': 'chatbot.config',
+    'res_id': default_settings.id,
+    'type': 'ir.actions.act_window',
+    'view_id': env.ref('isd_chatbot.view_chatbot_global_settings_form').id,
+    'target': 'current',
+    'context': {'form_view_initial_mode': 'edit'},
+}
+        </field>
+    </record>
+    
+    <!-- Chatbot Global Settings Action -->
+    <record id="action_chatbot_global_settings" model="ir.actions.act_window">
+        <field name="name">Global Settings</field>
+        <field name="res_model">chatbot.config</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_chatbot_global_settings_form"/>
+        <field name="domain">[('name', '=', 'Default Settings')]</field>
+        <field name="context">{'create': False, 'form_view_initial_mode': 'edit'}</field>
+        <field name="target">current</field>
+        <field name="help" type="html">
+            <p>
+                Configure global settings for the chatbot.
+            </p>
+        </field>
+    </record>
+</odoo>
+

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Survey Question Mapping List View -->
+    <record id="view_survey_question_mapping_list" model="ir.ui.view">
+        <field name="name">survey.question.mapping.list</field>
+        <field name="model">survey.question.mapping</field>
+        <field name="arch" type="xml">
+            <list string="Survey Field Mappings">
+                <field name="sequence" widget="handle"/>
+                <field name="survey_id"/>
+                <field name="inquiry_field"/>
+                <field name="question_id"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Survey Question Mapping Form View -->
+    <record id="view_survey_question_mapping_form" model="ir.ui.view">
+        <field name="name">survey.question.mapping.form</field>
+        <field name="model">survey.question.mapping</field>
+        <field name="arch" type="xml">
+            <form string="Survey Field Mapping">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="survey_id" options="{'no_create': True}"/>
+                            <field name="question_id" options="{'no_create': True}"
+                                   domain="[('survey_id', '=', survey_id)]"/>
+                        </group>
+                        <group>
+                            <field name="inquiry_field"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <group string="Mapping Info">
+                        <p class="text-muted">
+                            This mapping will automatically fill the selected survey question
+                            with data from the customer inquiry field when a user is invited.
+                        </p>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Survey Question Mapping Action -->
+    <record id="action_survey_question_mapping" model="ir.actions.act_window">
+        <field name="name">Survey Field Mappings</field>
+        <field name="res_model">survey.question.mapping</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first survey field mapping
+            </p>
+            <p>
+                Map customer inquiry fields to survey questions to automatically
+                pre-fill survey responses when inviting users.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item for Survey Mappings -->
+    <menuitem
+        id="menu_survey_question_mapping"
+        name="Survey Mappings"
+        parent="menu_chatbot_config"
+        action="action_survey_question_mapping"
+        sequence="15"/>
+
+</odoo>

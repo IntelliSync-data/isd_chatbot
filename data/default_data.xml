@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Default Chatbot Configuration Data -->
+    <record id="default_chatbot_config_1" model="chatbot.config">
+        <field name="name">Greeting</field>
+        <field name="sequence">10</field>
+        <field name="question">xin chào
+hello
+hi
+chào bạn</field>
+        <field name="answer">Xin chào! Tôi là chatbot hỗ trợ của IntelliSync Data. Tôi có thể giúp gì cho bạn hôm nay?</field>
+        <field name="threshold">0.45</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="default_chatbot_config_2" model="chatbot.config">
+        <field name="name">Product Information</field>
+        <field name="sequence">20</field>
+        <field name="question">sản phẩm
+dịch vụ
+làm gì
+hoạt động
+business</field>
+        <field name="answer">Chúng tôi cung cấp các giải pháp phần mềm tùy chỉnh, phát triển ứng dụng web và mobile, tư vấn chuyển đổi số cho doanh nghiệp. Bạn có muốn biết thêm chi tiết về dịch vụ nào không?</field>
+        <field name="threshold">0.60</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="default_chatbot_config_3" model="chatbot.config">
+        <field name="name">Contact Information</field>
+        <field name="sequence">30</field>
+        <field name="question">liên hệ
+contact
+email
+phone
+địa chỉ
+address</field>
+        <field name="answer">Bạn có thể liên hệ với chúng tôi qua:
+- Email: info@intellisyncdata.com
+- Điện thoại: 0123-456-789
+- Địa chỉ: 123 Đường ABC, Quận 1, TP.HCM
+Hoặc để lại thông tin, chúng tôi sẽ liên hệ lại với bạn.</field>
+        <field name="threshold">0.60</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="default_chatbot_config_4" model="chatbot.config">
+        <field name="name">Support Hours</field>
+        <field name="sequence">40</field>
+        <field name="question">giờ làm việc
+thời gian
+hỗ trợ
+mở cửa
+working hours</field>
+        <field name="answer">Chúng tôi làm việc từ thứ 2 đến thứ 6, từ 8:00 sáng đến 17:30 chiều. Ngoài giờ làm việc, bạn có thể để lại thông tin và chúng tôi sẽ liên hệ lại sớm nhất có thể.</field>
+        <field name="threshold">0.6</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="default_chatbot_config_5" model="chatbot.config">
+        <field name="name">Goodbye</field>
+        <field name="sequence">50</field>
+        <field name="question">tạm biệt
+bye
+goodbye
+cảm ơn
+thank you
+thanks</field>
+        <field name="answer">Cảm ơn bạn đã liên hệ với chúng tôi! Chúc bạn một ngày tốt lành. Nếu có thêm câu hỏi, đừng ngần ngại liên hệ lại nhé!</field>
+        <field name="threshold">0.6</field>
+        <field name="active">True</field>
+    </record>
+
+    <!-- Default Configuration Settings -->
+    <record id="default_chatbot_settings" model="chatbot.config">
+        <field name="name">Default Settings</field>
+        <field name="sequence">100</field>
+        <field name="question">default</field>
+        <field name="answer">Default response</field>
+        <field name="threshold">0.8</field>
+        <field name="default_message">Tôi không hiểu câu hỏi của bạn. Vui lòng để lại thông tin liên hệ để được tư vấn cụ thể hơn.</field>
+        <field name="language_model">en_core_web_sm</field>
+        <field name="response_type">form</field>
+        <field name="prompt_message">Vui lòng cung cấp họ tên, email và số điện thoại của bạn để chúng tôi liên hệ hỗ trợ.</field>
+        <field name="active">True</field>
+    </record>
+</odoo>
