@@ -4,7 +4,7 @@
     'version': '18.0.1.0.0',
     'summary': 'Intelligent Chatbot for Odoo 19.0 with CRM and Calendar Integration',
     'description': """
-        This module provides an intelligent chatbot for Odoo 19.0, allowing
+        This module provides an intelligent chatbot for Odoo 18.0, allowing
         for automated conversation handling, customer inquiry collection,
         and seamless integration with Odoo CRM, Calendar, and Email.
         
@@ -26,13 +26,13 @@
         'data/inquiry_source_data.xml',
         'data/webhook_cron.xml',
         'views/a_res_config_settings_views.xml',
-        'views/inquiry_source_views.xml',
         'views/chatbot_config_views.xml',
         'views/customer_inquiry_views.xml',
         'views/chatbot_conversation_views.xml',
         'views/webhook_log_views.xml',
-        'views/survey_mapping_views.xml',
         'views/menu_items.xml',
+        'views/survey_mapping_views.xml',
+        'views/inquiry_source_views.xml',
         'wizard/views/customer_inquiry_analyze_confirm_view.xml',
     ],
     # 'assets': {
