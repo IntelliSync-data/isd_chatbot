@@ -183,10 +183,15 @@ class ChatbotController(http.Controller):
             }
             .cb-fab:hover { transform: scale(1.1); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
             .cb-fab-toggle { background: #3d6b8c; width: 56px; height: 56px; }
-            .cb-fab-chat    { background: #3d6b8c; }
+            .cb-fab-chat    { background: #3d6b8c; padding: 0; }
             .cb-fab-phone   { background: #3d6b8c; }
             .cb-fab-zalo    { background: #3d6b8c; font-weight: bold; font-size: 20px; }
             .cb-fab-messenger { background: #3d6b8c; }
+            .cb-fab-chat img, .cb-fab-phone img, .cb-fab-zalo img, .cb-fab-messenger img {
+                width: 100%%;
+                height: 100%%;
+                border-radius: 100%%;
+            }
             .chatbot-window {
                 position: absolute;
                 bottom: 72px;
