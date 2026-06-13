@@ -70,6 +70,11 @@ class ResConfigSettings(models.TransientModel):
     chatbot_zalo_oa_api_refresh_token = fields.Text('Zalo OA Api Refresh Token',
                                             help="API Refresh Token for Zalo OA integration",
                                             )
+
+    # Widget contact buttons
+    chatbot_widget_phone = fields.Char(string='Phone Number', help='Show phone button on widget if set (e.g. +84901234567)')
+    chatbot_widget_zalo_link = fields.Char(string='Zalo Link', help='Show Zalo button on widget if set (e.g. https://zalo.me/xxx)')
+    chatbot_widget_messenger_link = fields.Char(string='Messenger Link', help='Show Messenger button on widget if set (e.g. https://m.me/xxx)')
     # Get parameter values - Delegated to ChatbotConfig for centralized management
     @api.model
     def get_values(self):
@@ -95,7 +100,10 @@ class ResConfigSettings(models.TransientModel):
             chatbot_zalo_oa_app_id=ICPSudo.get_param('isd_chatbot.zalo_oa_app_id', default=''),
             chatbot_zalo_oa_secret_key=ICPSudo.get_param('isd_chatbot.zalo_oa_api_secret_key', default=''),
             chatbot_zalo_oa_api_token=ICPSudo.get_param('isd_chatbot.zalo_oa_api_token', default=''),
-            chatbot_zalo_oa_api_refresh_token=ICPSudo.get_param('isd_chatbot.zalo_oa_api_refresh_token', default='')
+            chatbot_zalo_oa_api_refresh_token=ICPSudo.get_param('isd_chatbot.zalo_oa_api_refresh_token', default=''),
+            chatbot_widget_phone=ICPSudo.get_param('isd_chatbot.widget_phone', default=''),
+            chatbot_widget_zalo_link=ICPSudo.get_param('isd_chatbot.widget_zalo_link', default=''),
+            chatbot_widget_messenger_link=ICPSudo.get_param('isd_chatbot.widget_messenger_link', default=''),
         )
         return res
     
@@ -120,6 +128,9 @@ class ResConfigSettings(models.TransientModel):
         ICPSudo.set_param('isd_chatbot.zalo_oa_api_secret_key', self.chatbot_zalo_oa_secret_key or '')
         ICPSudo.set_param('isd_chatbot.zalo_oa_api_token', self.chatbot_zalo_oa_api_token or '')
         ICPSudo.set_param('isd_chatbot.zalo_oa_api_refresh_token', self.chatbot_zalo_oa_api_refresh_token or '')
+        ICPSudo.set_param('isd_chatbot.widget_phone', self.chatbot_widget_phone or '')
+        ICPSudo.set_param('isd_chatbot.widget_zalo_link', self.chatbot_widget_zalo_link or '')
+        ICPSudo.set_param('isd_chatbot.widget_messenger_link', self.chatbot_widget_messenger_link or '')
         
         # Trigger configuration sync to ensure consistency
         self.env['chatbot.config']._sync_config_parameters()

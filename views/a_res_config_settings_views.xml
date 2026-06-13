@@ -95,6 +95,31 @@
                         </setting>
                     </block>
 
+                    <!-- Widget Contact Buttons -->
+                    <block title="Widget Contact Buttons" id="chatbot_widget_contacts">
+                        <setting string="Phone Number" help="Show phone button on chatbot widget (leave empty to hide)">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_widget_phone" placeholder="+84901234567"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Zalo Link" help="Show Zalo button on chatbot widget (leave empty to hide)">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_widget_zalo_link" placeholder="https://zalo.me/xxx"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Messenger Link" help="Show Messenger button on chatbot widget (leave empty to hide)">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_widget_messenger_link" placeholder="https://m.me/xxx"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+
                     <!-- Partner Integration Settings Section -->
                     <block title="Partner Integration Settings" id="chatbot_partner_integration_settings">
                         <setting string="Zalo OA App Id" help="Your Zalo OA App ID for authentication">

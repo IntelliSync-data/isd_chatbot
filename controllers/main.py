@@ -3,8 +3,8 @@
 import json
 import logging
 from ..services.chatbot_service import ChatbotService, ChatbotServiceFactory
-from odoo import http, fields
-from odoo.http import request
+from ISD import http, fields
+from ISD.http import request
 from concurrent.futures import ThreadPoolExecutor
 import time
 
@@ -37,412 +37,374 @@ class ChatbotController(http.Controller):
     @http.route('/chatbot/widget.js', type='http', auth='public', website=True)
     def chatbot_widget_js(self, **kwargs):
         """Serve the chatbot JavaScript widget"""
+        ICPSudo = request.env['ir.config_parameter'].sudo()
+        phone = ICPSudo.get_param('isd_chatbot.widget_phone', default='')
+        zalo_link = ICPSudo.get_param('isd_chatbot.widget_zalo_link', default='')
+        messenger_link = ICPSudo.get_param('isd_chatbot.widget_messenger_link', default='')
+
         js_content = """
 (function() {
     'use strict';
-    
+
     // Chatbot configuration
     const CHATBOT_CONFIG = {
         apiUrl: '%s',
-        position: 'bottom-right',
-        theme: 'default'
+        phone: '%s',
+        zaloLink: '%s',
+        messengerLink: '%s',
     };
     
-    // Create chatbot HTML structure
+    // ── Icons (PNG from static files) ──────────────────────────────────────────
+    const STATIC_URL = '/isd_chatbot/static/img/';
+    function imgIcon(name, size) {
+        size = size || 28;
+        return `<img src="${STATIC_URL}${name}.png" width="${size}" height="${size}" alt="${name}" style="display:block;"/>`;
+    }
+    // Fallback text icons if image not found
+    const FALLBACK = { chat: '💬', close: '✕', toggle: '＋', phone: '📞', zalo: 'Z', messenger: 'M' };
+
+    // ── HTML ───────────────────────────────────────────────────────────────────
     function createChatbotHTML() {
+        const contactBtns = [];
+        if (CHATBOT_CONFIG.messengerLink) {
+            contactBtns.push(`
+                <a href="${CHATBOT_CONFIG.messengerLink}" target="_blank" class="cb-fab cb-fab-messenger" title="Messenger">
+                    ${imgIcon('icon_messenger')}
+                </a>`);
+        }
+        if (CHATBOT_CONFIG.zaloLink) {
+            contactBtns.push(`
+                <a href="${CHATBOT_CONFIG.zaloLink}" target="_blank" class="cb-fab cb-fab-zalo" title="Zalo">
+                    ${imgIcon('icon_zalo')}
+                </a>`);
+        }
+        if (CHATBOT_CONFIG.phone) {
+            contactBtns.push(`
+                <a href="tel:${CHATBOT_CONFIG.phone}" class="cb-fab cb-fab-phone" title="Gọi điện">
+                    ${imgIcon('icon_phone')}
+                </a>`);
+        }
+        contactBtns.push(`
+            <button id="cb-chat-btn" class="cb-fab cb-fab-chat" title="Chat">
+                ${imgIcon('icon_chat')}
+            </button>`);
+
         return `
-            <div id="odoo-chatbot" class="odoo-chatbot-container">
-                <div id="chatbot-toggle" class="chatbot-toggle">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
+        <div id="ISD-chatbot" class="cb-container">
+            <div id="cb-fab-list" class="cb-fab-list" style="display:none;">
+                ${contactBtns.join('')}
+            </div>
+            <button id="cb-toggle" class="cb-fab cb-fab-toggle">
+                <span id="cb-icon-plus">${imgIcon('icon_toggle')}</span>
+                <span id="cb-icon-close" style="display:none;">${imgIcon('icon_close', 22)}</span>
+            </button>
+            <div id="chatbot-window" class="chatbot-window" style="display:none;">
+                <div class="chatbot-header">
+                    <h3>Hỗ trợ trực tuyến</h3>
+                    <button id="chatbot-close" class="chatbot-close">${imgIcon('icon_close', 20)}</button>
                 </div>
-                <div id="chatbot-window" class="chatbot-window" style="display: none;">
-                    <div class="chatbot-header">
-                        <h3>Hỗ trợ trực tuyến</h3>
-                        <button id="chatbot-close" class="chatbot-close">&times;</button>
+                <div id="chatbot-messages" class="chatbot-messages">
+                    <div class="message bot-message">
+                        <div class="message-content">Xin chào! Tôi có thể giúp gì cho bạn?</div>
                     </div>
-                    <div id="chatbot-messages" class="chatbot-messages">
-                        <div class="message bot-message">
-                            <div class="message-content">Xin chào! Tôi có thể giúp gì cho bạn?</div>
-                        </div>
-                    </div>
-                    <div class="chatbot-input-area">
-                        <input type="text" id="chatbot-input" placeholder="Nhập tin nhắn..." />
-                        <button id="chatbot-send">Gửi</button>
-                    </div>
-                    <div id="customer-form" class="customer-form" style="display: none;">
-                        <h4>Vui lòng để lại thông tin để được tư vấn</h4>
-                        <input type="text" id="customer-name" placeholder="Họ và tên *" required />
-                        <input type="email" id="customer-email" placeholder="Email *" required />
-                        <input type="tel" id="customer-phone" placeholder="Số điện thoại" />
-                        <input type="datetime-local" id="customer-datetime" placeholder="Thời gian mong muốn" />
-                        <button id="submit-info">Gửi thông tin</button>
-                    </div>
+                </div>
+                <div class="chatbot-input-area">
+                    <input type="text" id="chatbot-input" placeholder="Nhập tin nhắn..." />
+                    <button id="chatbot-send">Gửi</button>
+                </div>
+                <div id="customer-form" class="customer-form" style="display:none;">
+                    <h4>Vui lòng để lại thông tin để được tư vấn</h4>
+                    <input type="text" id="customer-name" placeholder="Họ và tên *" required />
+                    <input type="email" id="customer-email" placeholder="Email *" required />
+                    <input type="tel" id="customer-phone" placeholder="Số điện thoại" />
+                    <input type="datetime-local" id="customer-datetime" />
+                    <button id="submit-info">Gửi thông tin</button>
                 </div>
             </div>
-        `;
+        </div>`;
     }
-    
-    // Create chatbot CSS
+
+    // ── CSS ────────────────────────────────────────────────────────────────────
     function createChatbotCSS() {
         const css = `
-            .odoo-chatbot-container {
+            .cb-container {
                 position: fixed;
-                bottom: 20px;
-                right: 20px;
+                bottom: 24px;
+                right: 24px;
                 z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 12px;
                 font-family: Arial, sans-serif;
             }
-            
-            .chatbot-toggle {
-                width: 60px;
-                height: 60px;
-                background: #007bff;
+            .cb-fab-list {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 12px;
+            }
+            .cb-fab {
+                width: 52px;
+                height: 52px;
                 border-radius: 50%%;
+                border: none;
+                cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                text-decoration: none;
                 color: white;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                transition: all 0.3s ease;
             }
-            
-            .chatbot-toggle:hover {
-                background: #0056b3;
-                transform: scale(1.1);
-            }
-            
+            .cb-fab:hover { transform: scale(1.1); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+            .cb-fab-toggle { background: #3d6b8c; width: 56px; height: 56px; }
+            .cb-fab-chat    { background: #3d6b8c; }
+            .cb-fab-phone   { background: #3d6b8c; }
+            .cb-fab-zalo    { background: #3d6b8c; font-weight: bold; font-size: 20px; }
+            .cb-fab-messenger { background: #3d6b8c; }
             .chatbot-window {
                 position: absolute;
-                bottom: 70px;
+                bottom: 72px;
                 right: 0;
                 width: 350px;
                 height: 500px;
                 background: white;
-                border-radius: 10px;
-                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                border-radius: 12px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.18);
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
             }
-            
             .chatbot-header {
-                background: #007bff;
+                background: #3d6b8c;
                 color: white;
-                padding: 15px;
+                padding: 14px 16px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
             }
-            
-            .chatbot-header h3 {
-                margin: 0;
-                font-size: 16px;
-            }
-            
+            .chatbot-header h3 { margin: 0; font-size: 15px; }
             .chatbot-close {
                 background: none;
                 border: none;
                 color: white;
-                font-size: 20px;
                 cursor: pointer;
-                padding: 0;
-                width: 24px;
-                height: 24px;
                 display: flex;
                 align-items: center;
-                justify-content: center;
+                padding: 0;
             }
-            
             .chatbot-messages {
                 flex: 1;
-                padding: 15px;
+                padding: 14px;
                 overflow-y: auto;
                 background: #f8f9fa;
             }
-            
-            .message {
-                margin-bottom: 15px;
-                display: flex;
-            }
-            
+            .message { margin-bottom: 12px; display: flex; }
             .bot-message .message-content {
                 background: #e9ecef;
-                padding: 10px 15px;
+                padding: 10px 14px;
                 border-radius: 18px;
                 max-width: 80%%;
                 word-wrap: break-word;
+                font-size: 14px;
             }
-            
-            .user-message {
-                justify-content: flex-end;
-            }
-            
+            .user-message { justify-content: flex-end; }
             .user-message .message-content {
-                background: #007bff;
+                background: #3d6b8c;
                 color: white;
-                padding: 10px 15px;
+                padding: 10px 14px;
                 border-radius: 18px;
                 max-width: 80%%;
                 word-wrap: break-word;
+                font-size: 14px;
             }
-            
             .chatbot-input-area {
-                padding: 15px;
+                padding: 12px;
                 border-top: 1px solid #dee2e6;
                 display: flex;
-                gap: 10px;
+                gap: 8px;
             }
-            
             .chatbot-input-area input {
                 flex: 1;
-                padding: 10px;
+                padding: 9px 14px;
                 border: 1px solid #dee2e6;
                 border-radius: 20px;
                 outline: none;
+                font-size: 14px;
             }
-            
             .chatbot-input-area button {
-                background: #007bff;
+                background: #3d6b8c;
                 color: white;
                 border: none;
-                padding: 10px 20px;
+                padding: 9px 18px;
                 border-radius: 20px;
                 cursor: pointer;
+                font-size: 14px;
             }
-            
             .customer-form {
-                padding: 15px;
+                padding: 14px;
                 border-top: 1px solid #dee2e6;
                 background: #f8f9fa;
             }
-            
-            .customer-form h4 {
-                margin: 0 0 15px 0;
-                font-size: 14px;
-                color: #495057;
-            }
-            
+            .customer-form h4 { margin: 0 0 12px; font-size: 13px; color: #495057; }
             .customer-form input {
                 width: 100%%;
-                padding: 10px;
-                margin-bottom: 10px;
+                padding: 9px;
+                margin-bottom: 8px;
                 border: 1px solid #dee2e6;
-                border-radius: 5px;
+                border-radius: 6px;
                 box-sizing: border-box;
+                font-size: 13px;
             }
-            
             .customer-form button {
                 width: 100%%;
                 background: #28a745;
                 color: white;
                 border: none;
-                padding: 12px;
-                border-radius: 5px;
+                padding: 10px;
+                border-radius: 6px;
                 cursor: pointer;
                 font-weight: bold;
+                font-size: 14px;
             }
-            
-            .customer-form button:hover {
-                background: #218838;
-            }
+            .customer-form button:hover { background: #218838; }
         `;
-        
         const style = document.createElement('style');
         style.textContent = css;
         document.head.appendChild(style);
     }
-    
-    // Initialize chatbot
+
+    // ── Init ───────────────────────────────────────────────────────────────────
     function initChatbot() {
-        // Create CSS
         createChatbotCSS();
-        
-        // Create HTML
-        const chatbotHTML = createChatbotHTML();
-        document.body.insertAdjacentHTML('beforeend', chatbotHTML);
-        
-        // Bind events
+        document.body.insertAdjacentHTML('beforeend', createChatbotHTML());
         bindEvents();
     }
-    
-    // Bind chatbot events
+
+    // ── Events ─────────────────────────────────────────────────────────────────
     function bindEvents() {
-        const toggle = document.getElementById('chatbot-toggle');
-        const window = document.getElementById('chatbot-window');
-        const close = document.getElementById('chatbot-close');
-        const input = document.getElementById('chatbot-input');
-        const sendBtn = document.getElementById('chatbot-send');
+        const toggle   = document.getElementById('cb-toggle');
+        const fabList  = document.getElementById('cb-fab-list');
+        const chatBtn  = document.getElementById('cb-chat-btn');
+        const chatWin  = document.getElementById('chatbot-window');
+        const closeBtn = document.getElementById('chatbot-close');
+        const input    = document.getElementById('chatbot-input');
+        const sendBtn  = document.getElementById('chatbot-send');
         const submitBtn = document.getElementById('submit-info');
-        
+        const iconPlus  = document.getElementById('cb-icon-plus');
+        const iconClose = document.getElementById('cb-icon-close');
+
+        let menuOpen = false;
+
         toggle.addEventListener('click', () => {
-            window.style.display = window.style.display === 'none' ? 'flex' : 'none';
+            menuOpen = !menuOpen;
+            fabList.style.display = menuOpen ? 'flex' : 'none';
+            iconPlus.style.display  = menuOpen ? 'none'  : 'flex';
+            iconClose.style.display = menuOpen ? 'flex'  : 'none';
+            if (!menuOpen) chatWin.style.display = 'none';
         });
-        
-        close.addEventListener('click', () => {
-            window.style.display = 'none';
+
+        if (chatBtn) {
+            chatBtn.addEventListener('click', () => {
+                chatWin.style.display = chatWin.style.display === 'none' ? 'flex' : 'none';
+            });
+        }
+
+        closeBtn.addEventListener('click', () => {
+            chatWin.style.display = 'none';
         });
-        
+
         sendBtn.addEventListener('click', sendMessage);
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-        
-        submitBtn.addEventListener('click', submitCustomerInfo);
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        if (submitBtn) submitBtn.addEventListener('click', submitCustomerInfo);
     }
-    
-    // State management
-    window.chatbotSessionId = null; // Store conversation session ID
-    
-    // Send message to chatbot
+
+    // ── State ──────────────────────────────────────────────────────────────────
+    window.chatbotSessionId = null;
+
+    // ── Send message ───────────────────────────────────────────────────────────
     async function sendMessage() {
         const input = document.getElementById('chatbot-input');
         const message = input.value.trim();
-        
         if (!message) return;
-        
-        // Add user message to chat
         addMessage(message, 'user');
         input.value = '';
-        
         try {
-            // Prepare params with session ID
-            const params = { 
-                message: message,
-                session_id: window.chatbotSessionId
-            };
-            
-            // Gọi API
             const response = await fetch(CHATBOT_CONFIG.apiUrl + '/chat', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    jsonrpc: "2.0", 
-                    params: params
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jsonrpc: "2.0", params: { message, session_id: window.chatbotSessionId } })
             });
-            
             const data = await response.json();
-            
             if (data.result?.success) {
-                // Update session ID from server response
-                if (data.result.session_id) {
-                    window.chatbotSessionId = data.result.session_id;
-                }
-
+                if (data.result.session_id) window.chatbotSessionId = data.result.session_id;
                 addMessage(data.result?.response, 'bot');
-                
-                // Xử lý theo loại phản hồi
                 const responseType = data.result?.response_type || 'none';
-                
                 if (responseType === 'form') {
-                    // Hiển thị form nhập thông tin
                     showCustomerForm();
                     window.chatbotUserInfoMode = false;
-                } 
-                else if (responseType === 'prompt') {
-                    // Chuyển sang chế độ prompt để xử lý thông tin người dùng
+                } else if (responseType === 'prompt') {
                     window.chatbotUserInfoMode = true;
-                    
-                    // Nếu có thông tin thiếu, hiển thị yêu cầu bổ sung
-                    if (data.result?.missing_fields) {
-                        const missing = data.result.missing_fields.join(', ');
-                        console.log('Missing fields:', missing);
-                    }
-                }
-                else {
-                    // Chế độ none - không làm gì cả
+                } else {
                     window.chatbotUserInfoMode = false;
                 }
             } else {
-                console.error('Chatbot error:', data);
                 addMessage('Xin lỗi, có lỗi xảy ra. Vui lòng thử lại.', 'bot');
             }
         } catch (error) {
-            console.error('Error sending message:', error);
             addMessage('Xin lỗi, có lỗi xảy ra. Vui lòng thử lại sau.', 'bot');
         }
     }
-    
-    // Add message to chat
+
     function addMessage(content, type) {
-        const messagesContainer = document.getElementById('chatbot-messages');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${type}-message`;
-        messageDiv.innerHTML = `<div class="message-content">${content}</div>`;
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        const container = document.getElementById('chatbot-messages');
+        const div = document.createElement('div');
+        div.className = `message ${type}-message`;
+        div.innerHTML = `<div class="message-content">${content}</div>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
     }
-    
-    // Show customer form
+
     function showCustomerForm() {
         document.getElementById('customer-form').style.display = 'block';
         document.querySelector('.chatbot-input-area').style.display = 'none';
     }
-    
-    // Submit customer information
+
     async function submitCustomerInfo() {
-        const name = document.getElementById('customer-name').value.trim();
-        const email = document.getElementById('customer-email').value.trim();
-        const phone = document.getElementById('customer-phone').value.trim();
+        const name     = document.getElementById('customer-name').value.trim();
+        const email    = document.getElementById('customer-email').value.trim();
+        const phone    = document.getElementById('customer-phone').value.trim();
         const datetime = document.getElementById('customer-datetime').value;
-        
-        if (!name || !email) {
-            alert('Vui lòng nhập họ tên và email');
-            return;
-        }
-        
+        if (!name || !email) { alert('Vui lòng nhập họ tên và email'); return; }
         try {
             const response = await fetch(CHATBOT_CONFIG.apiUrl + '/submit_info', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    jsonrpc: "2.0",
-                    params: {
-                        name: name,
-                        email: email,
-                        phone: phone,
-                        consultation_datetime: datetime,
-                        session_id: window.chatbotSessionId
-                    }
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jsonrpc: "2.0", params: { name, email, phone, consultation_datetime: datetime, session_id: window.chatbotSessionId } })
             });
-            
             const data = await response.json();
-            
             if (data.result.success) {
                 addMessage('Cảm ơn! Thông tin của bạn đã được ghi nhận. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.', 'bot');
                 document.getElementById('customer-form').style.display = 'none';
                 document.querySelector('.chatbot-input-area').style.display = 'flex';
-                
-                // Clear form
-                document.getElementById('customer-name').value = '';
-                document.getElementById('customer-email').value = '';
-                document.getElementById('customer-phone').value = '';
-                document.getElementById('customer-datetime').value = '';
+                ['customer-name','customer-email','customer-phone','customer-datetime'].forEach(id => document.getElementById(id).value = '');
             } else {
                 alert('Có lỗi xảy ra. Vui lòng thử lại.');
             }
         } catch (error) {
-            console.error('Submit error:', error);
             alert('Có lỗi xảy ra. Vui lòng thử lại.');
         }
     }
-    
-    // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initChatbot);
-        } else {
-            initChatbot();
-        }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initChatbot);
+    } else {
+        initChatbot();
+    }
     })();
-        """ % (get_base_url() + '/chatbot/api')
+        """ % (get_base_url() + '/chatbot/api', phone, zalo_link, messenger_link)
 
         return request.make_response(
             js_content,
@@ -564,10 +526,10 @@ class ChatbotController(http.Controller):
                     tz_vietnam = pytz.timezone('Asia/Ho_Chi_Minh')
                     dt_vietnam = tz_vietnam.localize(dt)
 
-                    # Convert to UTC for storage in database (Odoo stores datetime in UTC)
+                    # Convert to UTC for storage in database (ISD stores datetime in UTC)
                     dt_utc = dt_vietnam.astimezone(pytz.UTC)
 
-                    # Remove timezone info to make it naive (Odoo expects naive datetime)
+                    # Remove timezone info to make it naive (ISD expects naive datetime)
                     dt_naive = dt_utc.replace(tzinfo=None)
 
                     _logger.info(
@@ -593,7 +555,7 @@ class ChatbotController(http.Controller):
     def chatbot_snippet_info(self, **kwargs):
         """Provide information about chatbot integration"""
         snippet_code = f"""
-<!-- Odoo Chatbot Integration -->
+<!-- ISD Chatbot Integration -->
 <script src="{get_base_url()}/chatbot/widget.js"></script>
         """.strip()
 
@@ -601,7 +563,7 @@ class ChatbotController(http.Controller):
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Odoo Chatbot Integration</title>
+    <title>ISD Chatbot Integration</title>
     <style>
         body {{ font-family: Arial, sans-serif; margin: 40px; }}
         .code {{ background: #f4f4f4; padding: 15px; border-radius: 5px; margin: 20px 0; }}
@@ -609,11 +571,11 @@ class ChatbotController(http.Controller):
     </style>
 </head>
 <body>
-    <h1>Odoo Chatbot Integration</h1>
+    <h1>ISD Chatbot Integration</h1>
     
     <div class="highlight">
         <h3>🚀 Quick Integration</h3>
-        <p>Add this code to any website to integrate the Odoo chatbot:</p>
+        <p>Add this code to any website to integrate the ISD chatbot:</p>
     </div>
     
     <div class="code">
@@ -637,7 +599,7 @@ class ChatbotController(http.Controller):
         <li><code>POST {get_base_url()}/chatbot/api/submit_info</code> - Submit customer information</li>
     </ul>
     
-    <p><strong>Note:</strong> Make sure the Odoo Chatbot module is installed and configured properly.</p>
+    <p><strong>Note:</strong> Make sure the ISD Chatbot module is installed and configured properly.</p>
 </body>
 </html>
         """
