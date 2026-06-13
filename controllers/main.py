@@ -44,7 +44,7 @@ class ChatbotController(http.Controller):
 
         def icon_url(param_key):
             att_id = int(ICPSudo.get_param(param_key, default=0) or 0)
-            return '/web/image/ir.attachment/%d/datas' % att_id if att_id else ''
+            return '%s/web/image/ir.attachment/%d/datas' % (get_base_url(), att_id) if att_id else ''
 
         icon_toggle = icon_url('isd_chatbot.icon_toggle_id')
         icon_chat = icon_url('isd_chatbot.icon_chat_id')
