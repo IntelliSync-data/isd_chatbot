@@ -3,8 +3,8 @@
 import json
 import logging
 from ..services.chatbot_service import ChatbotService, ChatbotServiceFactory
-from ISD import http, fields
-from ISD.http import request
+from odoo import http, fields
+from odoo.http import request
 from concurrent.futures import ThreadPoolExecutor
 import time
 
@@ -90,7 +90,7 @@ class ChatbotController(http.Controller):
             </button>`);
 
         return `
-        <div id="ISD-chatbot" class="cb-container">
+        <div id="odoo-chatbot" class="cb-container">
             <div id="cb-fab-list" class="cb-fab-list" style="display:none;">
                 ${contactBtns.join('')}
             </div>
