@@ -42,6 +42,16 @@ class ChatbotController(http.Controller):
         zalo_link = ICPSudo.get_param('isd_chatbot.widget_zalo_link', default='')
         messenger_link = ICPSudo.get_param('isd_chatbot.widget_messenger_link', default='')
 
+        def icon_url(param_key):
+            att_id = int(ICPSudo.get_param(param_key, default=0) or 0)
+            return '/web/image/ir.attachment/%d/datas' % att_id if att_id else ''
+
+        icon_toggle = icon_url('isd_chatbot.icon_toggle_id')
+        icon_chat = icon_url('isd_chatbot.icon_chat_id')
+        icon_phone = icon_url('isd_chatbot.icon_phone_id')
+        icon_zalo = icon_url('isd_chatbot.icon_zalo_id')
+        icon_messenger = icon_url('isd_chatbot.icon_messenger_id')
+
         js_content = """
 (function() {
     'use strict';
@@ -52,16 +62,29 @@ class ChatbotController(http.Controller):
         phone: '%s',
         zaloLink: '%s',
         messengerLink: '%s',
+        icons: {
+            toggle: '%s',
+            chat: '%s',
+            phone: '%s',
+            zalo: '%s',
+            messenger: '%s',
+        },
     };
-    
-    // ── Icons (PNG from static files) ──────────────────────────────────────────
-    const STATIC_URL = '/isd_chatbot/static/img/';
-    function imgIcon(name, size) {
-        size = size || 28;
-        return `<img src="${STATIC_URL}${name}.png" width="${size}" height="${size}" alt="${name}" style="display:block;"/>`;
+
+    // ── Icons ──────────────────────────────────────────────────────────────────
+    const FALLBACK_ICONS = {
+        toggle: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+        close:  `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+        chat:      `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+        phone:     `<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>`,
+        zalo:      `<svg width="22" height="22" viewBox="0 0 50 50" fill="white"><text y="38" font-size="38" font-family="Arial" font-weight="bold">Z</text></svg>`,
+        messenger: `<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.145 2 11.259c0 2.913 1.454 5.512 3.726 7.21V22l3.405-1.869c.909.252 1.871.388 2.869.388 5.523 0 10-4.145 10-9.259C22 6.145 17.523 2 12 2zm1.008 12.472l-2.548-2.717-4.976 2.717 5.474-5.808 2.61 2.717 4.913-2.717-5.473 5.808z"/></svg>`,
+    };
+    function icon(name, size) {
+        const url = CHATBOT_CONFIG.icons[name];
+        if (url) return `<img src="${url}" width="${size || 28}" height="${size || 28}" alt="${name}" style="display:block;"/>`;
+        return FALLBACK_ICONS[name] || '';
     }
-    // Fallback text icons if image not found
-    const FALLBACK = { chat: '💬', close: '✕', toggle: '＋', phone: '📞', zalo: 'Z', messenger: 'M' };
 
     // ── HTML ───────────────────────────────────────────────────────────────────
     function createChatbotHTML() {
@@ -69,24 +92,24 @@ class ChatbotController(http.Controller):
         if (CHATBOT_CONFIG.messengerLink) {
             contactBtns.push(`
                 <a href="${CHATBOT_CONFIG.messengerLink}" target="_blank" class="cb-fab cb-fab-messenger" title="Messenger">
-                    ${imgIcon('icon_messenger')}
+                    ${icon('messenger')}
                 </a>`);
         }
         if (CHATBOT_CONFIG.zaloLink) {
             contactBtns.push(`
                 <a href="${CHATBOT_CONFIG.zaloLink}" target="_blank" class="cb-fab cb-fab-zalo" title="Zalo">
-                    ${imgIcon('icon_zalo')}
+                    ${icon('zalo')}
                 </a>`);
         }
         if (CHATBOT_CONFIG.phone) {
             contactBtns.push(`
                 <a href="tel:${CHATBOT_CONFIG.phone}" class="cb-fab cb-fab-phone" title="Gọi điện">
-                    ${imgIcon('icon_phone')}
+                    ${icon('phone')}
                 </a>`);
         }
         contactBtns.push(`
             <button id="cb-chat-btn" class="cb-fab cb-fab-chat" title="Chat">
-                ${imgIcon('icon_chat')}
+                ${icon('chat')}
             </button>`);
 
         return `
@@ -95,13 +118,13 @@ class ChatbotController(http.Controller):
                 ${contactBtns.join('')}
             </div>
             <button id="cb-toggle" class="cb-fab cb-fab-toggle">
-                <span id="cb-icon-plus">${imgIcon('icon_toggle')}</span>
-                <span id="cb-icon-close" style="display:none;">${imgIcon('icon_close', 22)}</span>
+                <span id="cb-icon-plus">${icon('toggle')}</span>
+                <span id="cb-icon-close" style="display:none;">${FALLBACK_ICONS.close}</span>
             </button>
             <div id="chatbot-window" class="chatbot-window" style="display:none;">
                 <div class="chatbot-header">
                     <h3>Hỗ trợ trực tuyến</h3>
-                    <button id="chatbot-close" class="chatbot-close">${imgIcon('icon_close', 20)}</button>
+                    <button id="chatbot-close" class="chatbot-close">${FALLBACK_ICONS.close}</button>
                 </div>
                 <div id="chatbot-messages" class="chatbot-messages">
                     <div class="message bot-message">
@@ -404,7 +427,8 @@ class ChatbotController(http.Controller):
         initChatbot();
     }
     })();
-        """ % (get_base_url() + '/chatbot/api', phone, zalo_link, messenger_link)
+        """ % (get_base_url() + '/chatbot/api', phone, zalo_link, messenger_link,
+               icon_toggle, icon_chat, icon_phone, icon_zalo, icon_messenger)
 
         return request.make_response(
             js_content,

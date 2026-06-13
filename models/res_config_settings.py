@@ -75,6 +75,13 @@ class ResConfigSettings(models.TransientModel):
     chatbot_widget_phone = fields.Char(string='Phone Number', help='Show phone button on widget if set (e.g. +84901234567)')
     chatbot_widget_zalo_link = fields.Char(string='Zalo Link', help='Show Zalo button on widget if set (e.g. https://zalo.me/xxx)')
     chatbot_widget_messenger_link = fields.Char(string='Messenger Link', help='Show Messenger button on widget if set (e.g. https://m.me/xxx)')
+
+    # Widget icons
+    chatbot_widget_icon_toggle = fields.Many2one('ir.attachment', string='Toggle Icon')
+    chatbot_widget_icon_chat = fields.Many2one('ir.attachment', string='Chat Icon')
+    chatbot_widget_icon_phone = fields.Many2one('ir.attachment', string='Phone Icon')
+    chatbot_widget_icon_zalo = fields.Many2one('ir.attachment', string='Zalo Icon')
+    chatbot_widget_icon_messenger = fields.Many2one('ir.attachment', string='Messenger Icon')
     # Get parameter values - Delegated to ChatbotConfig for centralized management
     @api.model
     def get_values(self):
@@ -104,6 +111,11 @@ class ResConfigSettings(models.TransientModel):
             chatbot_widget_phone=ICPSudo.get_param('isd_chatbot.widget_phone', default=''),
             chatbot_widget_zalo_link=ICPSudo.get_param('isd_chatbot.widget_zalo_link', default=''),
             chatbot_widget_messenger_link=ICPSudo.get_param('isd_chatbot.widget_messenger_link', default=''),
+            chatbot_widget_icon_toggle=int(ICPSudo.get_param('isd_chatbot.icon_toggle_id', default=0)) or False,
+            chatbot_widget_icon_chat=int(ICPSudo.get_param('isd_chatbot.icon_chat_id', default=0)) or False,
+            chatbot_widget_icon_phone=int(ICPSudo.get_param('isd_chatbot.icon_phone_id', default=0)) or False,
+            chatbot_widget_icon_zalo=int(ICPSudo.get_param('isd_chatbot.icon_zalo_id', default=0)) or False,
+            chatbot_widget_icon_messenger=int(ICPSudo.get_param('isd_chatbot.icon_messenger_id', default=0)) or False,
         )
         return res
     
@@ -131,6 +143,11 @@ class ResConfigSettings(models.TransientModel):
         ICPSudo.set_param('isd_chatbot.widget_phone', self.chatbot_widget_phone or '')
         ICPSudo.set_param('isd_chatbot.widget_zalo_link', self.chatbot_widget_zalo_link or '')
         ICPSudo.set_param('isd_chatbot.widget_messenger_link', self.chatbot_widget_messenger_link or '')
+        ICPSudo.set_param('isd_chatbot.icon_toggle_id', self.chatbot_widget_icon_toggle.id if self.chatbot_widget_icon_toggle else 0)
+        ICPSudo.set_param('isd_chatbot.icon_chat_id', self.chatbot_widget_icon_chat.id if self.chatbot_widget_icon_chat else 0)
+        ICPSudo.set_param('isd_chatbot.icon_phone_id', self.chatbot_widget_icon_phone.id if self.chatbot_widget_icon_phone else 0)
+        ICPSudo.set_param('isd_chatbot.icon_zalo_id', self.chatbot_widget_icon_zalo.id if self.chatbot_widget_icon_zalo else 0)
+        ICPSudo.set_param('isd_chatbot.icon_messenger_id', self.chatbot_widget_icon_messenger.id if self.chatbot_widget_icon_messenger else 0)
         
         # Trigger configuration sync to ensure consistency
         self.env['chatbot.config']._sync_config_parameters()

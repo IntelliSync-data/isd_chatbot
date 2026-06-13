@@ -118,6 +118,41 @@
                                 </div>
                             </div>
                         </setting>
+                        <setting string="Toggle Icon" help="Icon for the main toggle button">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_widget_icon_toggle" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Chat Icon" help="Icon for the chat button">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_widget_icon_chat" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Phone Icon" help="Icon for the phone button">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_widget_icon_phone" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Zalo Icon" help="Icon for the Zalo button">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_widget_icon_zalo" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Messenger Icon" help="Icon for the Messenger button">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_widget_icon_messenger" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                </div>
+                            </div>
+                        </setting>
                     </block>
 
                     <!-- Partner Integration Settings Section -->
