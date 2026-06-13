@@ -143,11 +143,17 @@ class ResConfigSettings(models.TransientModel):
         ICPSudo.set_param('isd_chatbot.widget_phone', self.chatbot_widget_phone or '')
         ICPSudo.set_param('isd_chatbot.widget_zalo_link', self.chatbot_widget_zalo_link or '')
         ICPSudo.set_param('isd_chatbot.widget_messenger_link', self.chatbot_widget_messenger_link or '')
-        ICPSudo.set_param('isd_chatbot.icon_toggle_id', self.chatbot_widget_icon_toggle.id if self.chatbot_widget_icon_toggle else 0)
-        ICPSudo.set_param('isd_chatbot.icon_chat_id', self.chatbot_widget_icon_chat.id if self.chatbot_widget_icon_chat else 0)
-        ICPSudo.set_param('isd_chatbot.icon_phone_id', self.chatbot_widget_icon_phone.id if self.chatbot_widget_icon_phone else 0)
-        ICPSudo.set_param('isd_chatbot.icon_zalo_id', self.chatbot_widget_icon_zalo.id if self.chatbot_widget_icon_zalo else 0)
-        ICPSudo.set_param('isd_chatbot.icon_messenger_id', self.chatbot_widget_icon_messenger.id if self.chatbot_widget_icon_messenger else 0)
+        icon_fields = [
+            ('isd_chatbot.icon_toggle_id', self.chatbot_widget_icon_toggle),
+            ('isd_chatbot.icon_chat_id', self.chatbot_widget_icon_chat),
+            ('isd_chatbot.icon_phone_id', self.chatbot_widget_icon_phone),
+            ('isd_chatbot.icon_zalo_id', self.chatbot_widget_icon_zalo),
+            ('isd_chatbot.icon_messenger_id', self.chatbot_widget_icon_messenger),
+        ]
+        for param_key, attachment in icon_fields:
+            ICPSudo.set_param(param_key, attachment.id if attachment else 0)
+            if attachment:
+                attachment.sudo().write({'public': True})
         
         # Trigger configuration sync to ensure consistency
         self.env['chatbot.config']._sync_config_parameters()
