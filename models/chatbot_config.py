@@ -119,8 +119,15 @@ class ChatbotConfig(models.Model):
                 
                 # Check similarity with each pattern
                 max_similarity = 0.0
+                user_lower = user_message.lower()
                 for pattern in patterns:
-                    pattern_doc = nlp(pattern.lower())
+                    pattern_lower = pattern.lower()
+                    # Exact / contains match bypasses vector similarity
+                    if pattern_lower == user_lower or pattern_lower in user_lower or user_lower in pattern_lower:
+                        max_similarity = 1.0
+                        _logger.info(f"  📝 EXACT MATCH: '{pattern}'")
+                        break
+                    pattern_doc = nlp(pattern_lower)
                     similarity = user_doc.similarity(pattern_doc)
                     max_similarity = max(max_similarity, similarity)
                     _logger.info(f"  📝 PATTERN MATCH: '{pattern}' → similarity={similarity:.3f}")
