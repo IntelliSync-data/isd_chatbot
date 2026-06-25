@@ -34,6 +34,24 @@ def get_base_url():
 
 class ChatbotController(http.Controller):
 
+    def _cors_headers(self):
+        """Return CORS headers based on allowed origins config"""
+        ICPSudo = request.env['ir.config_parameter'].sudo()
+        allowed = ICPSudo.get_param('isd_chatbot.cors_origins', default='')
+        origin = request.httprequest.headers.get('Origin', '')
+        allowed_list = [o.strip() for o in allowed.split(',') if o.strip()]
+        if origin and origin in allowed_list:
+            allow_origin = origin
+        elif not allowed_list:
+            allow_origin = '*'
+        else:
+            allow_origin = allowed_list[0]
+        return [
+            ('Access-Control-Allow-Origin', allow_origin),
+            ('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'),
+            ('Access-Control-Allow-Headers', 'Content-Type'),
+        ]
+
     @http.route('/chatbot/widget.js', type='http', auth='public', website=True)
     def chatbot_widget_js(self, **kwargs):
         """Serve the chatbot JavaScript widget"""
@@ -440,11 +458,16 @@ class ChatbotController(http.Controller):
             headers=[
                 ('Content-Type', 'application/javascript'),
                 ('Cache-Control', 'public, max-age=3600'),
-            ]
+            ] + self._cors_headers()
         )
 
-    @http.route('/chatbot/api/chat', type='json', auth='public', methods=['POST'], csrf=False)
+    @http.route(['/chatbot/api/chat', '/chatbot/api/submit_info'], type='http', auth='public', methods=['OPTIONS'], csrf=False)
+    def chatbot_api_preflight(self, **kwargs):
+        return request.make_response('', headers=self._cors_headers())
+
+    @http.route('/chatbot/api/chat', type='http', auth='public', methods=['POST'], csrf=False)
     def chatbot_chat(self, **kwargs):
+        kwargs = json.loads(request.httprequest.data or '{}').get('params', {})
         """Handle chatbot conversation"""
         try:
             # Input validation for security
@@ -478,7 +501,7 @@ class ChatbotController(http.Controller):
             customer_inquiry_created = message_dto.customer_inquiry_created
             conversation_ended = message_dto.conversation_ended
 
-            return {
+            result = {
                 'success': True,
                 'response': bot_message.content,
                 'response_type': bot_message.response_type,
@@ -490,10 +513,16 @@ class ChatbotController(http.Controller):
 
         except Exception as e:
             _logger.error(f"Chatbot chat error: {str(e)}")
-            return {'success': False, 'error': f'Internal server error: {str(e)}'}
+            result = {'success': False, 'error': f'Internal server error: {str(e)}'}
 
-    @http.route('/chatbot/api/submit_info', type='json', auth='public', methods=['POST'], csrf=False)
+        return request.make_response(
+            json.dumps({'result': result}),
+            headers=[('Content-Type', 'application/json')] + self._cors_headers()
+        )
+
+    @http.route('/chatbot/api/submit_info', type='http', auth='public', methods=['POST'], csrf=False)
     def chatbot_submit_info(self, **kwargs):
+        kwargs = json.loads(request.httprequest.data or '{}').get('params', {})
         """Handle customer information submission"""
         try:
             # Input validation for security
@@ -503,82 +532,64 @@ class ChatbotController(http.Controller):
 
             if not is_valid:
                 _logger.warning(f"Invalid input received: {errors}")
-                return {'success': False, 'error': 'Invalid input data'}
+                result = {'success': False, 'error': 'Invalid input data'}
+            else:
+                name = sanitized_data.get('name', '').strip()
+                email = sanitized_data.get('email', '').strip()
 
-            name = sanitized_data.get('name', '').strip()
-            email = sanitized_data.get('email', '').strip()
+                missing_fields = []
+                if not name:
+                    missing_fields.append('name')
+                if not email:
+                    missing_fields.append('email')
 
-            # Kiểm tra các trường bắt buộc
-            missing_fields = []
-            if not name:
-                missing_fields.append('name')
-            if not email:
-                missing_fields.append('email')
+                if missing_fields:
+                    missing = ', '.join(missing_fields)
+                    result = {'success': False, 'error': f'Vui lòng cung cấp: {missing}', 'missing_fields': missing_fields}
+                else:
+                    vals = {
+                        'name': name,
+                        'email': email,
+                        'phone': sanitized_data.get('phone', '').strip(),
+                        'message': sanitized_data.get('message', ''),
+                    }
 
-            if missing_fields:
-                missing = ', '.join(missing_fields)
-                return {
-                    'success': False,
-                    'error': f'Vui lòng cung cấp: {missing}',
-                    'missing_fields': missing_fields
-                }
+                    session_id = sanitized_data.get('session_id', '').strip()
+                    if session_id:
+                        conversation = request.env['chatbot.conversation'].sudo().search([
+                            ('session_id', '=', session_id)
+                        ], limit=1)
+                        if conversation:
+                            vals['conversation_id'] = conversation.id
+                            _logger.info(f"Linked inquiry to conversation {conversation.id}")
 
-            # Prepare data
-            vals = {
-                'name': name,
-                'email': email,
-                'phone': sanitized_data.get('phone', '').strip(),
-                'message': sanitized_data.get('message', ''),
-            }
+                    consultation_datetime = sanitized_data.get('consultation_datetime')
+                    if consultation_datetime:
+                        from datetime import datetime
+                        import pytz
+                        try:
+                            dt = datetime.fromisoformat(consultation_datetime)
+                            tz_vietnam = pytz.timezone('Asia/Ho_Chi_Minh')
+                            dt_vietnam = tz_vietnam.localize(dt)
+                            dt_utc = dt_vietnam.astimezone(pytz.UTC)
+                            dt_naive = dt_utc.replace(tzinfo=None)
+                            _logger.info(f"Converted datetime from '{dt}' (Vietnam) to naive UTC: '{dt_naive}'")
+                            vals['consultation_datetime'] = dt_naive
+                        except ValueError as e:
+                            _logger.warning(f"Invalid datetime format: {consultation_datetime} - Error: {e}")
 
-            # Link to conversation if session_id is provided
-            session_id = sanitized_data.get('session_id', '').strip()
-            if session_id:
-                conversation = request.env['chatbot.conversation'].sudo().search([
-                    ('session_id', '=', session_id)
-                ], limit=1)
-                if conversation:
-                    vals['conversation_id'] = conversation.id
-                    _logger.info(f"Linked inquiry to conversation {conversation.id}")
-
-            # Handle consultation datetime
-            consultation_datetime = sanitized_data.get('consultation_datetime')
-            if consultation_datetime:
-                from datetime import datetime
-                import pytz
-                try:
-                    # Parse datetime string - assuming user input is in Vietnam timezone
-                    # Input from datetime-local is in format YYYY-MM-DDTHH:MM without timezone info
-                    dt = datetime.fromisoformat(consultation_datetime)
-
-                    # Xác định rõ múi giờ Vietnam cho thời gian người dùng nhập
-                    tz_vietnam = pytz.timezone('Asia/Ho_Chi_Minh')
-                    dt_vietnam = tz_vietnam.localize(dt)
-
-                    # Convert to UTC for storage in database (ISD stores datetime in UTC)
-                    dt_utc = dt_vietnam.astimezone(pytz.UTC)
-
-                    # Remove timezone info to make it naive (ISD expects naive datetime)
-                    dt_naive = dt_utc.replace(tzinfo=None)
-
-                    _logger.info(
-                        f"Converted datetime from '{dt}' (Vietnam) to naive UTC: '{dt_naive}'")
-                    vals['consultation_datetime'] = dt_naive
-                except ValueError as e:
-                    _logger.warning(
-                        f"Invalid datetime format: {consultation_datetime} - Error: {e}")
-
-            # Create customer inquiry
-            inquiry = request.env['customer.inquiry'].sudo(
-            ).create_from_chatbot(vals)
-
-            _logger.info(f"Created customer inquiry {inquiry.id} from chatbot")
-
-            return {'success': True, 'inquiry_id': inquiry.id}
+                    inquiry = request.env['customer.inquiry'].sudo().create_from_chatbot(vals)
+                    _logger.info(f"Created customer inquiry {inquiry.id} from chatbot")
+                    result = {'success': True, 'inquiry_id': inquiry.id}
 
         except Exception as e:
             _logger.error(f"Chatbot submit info error: {str(e)}")
-            return {'success': False, 'error': 'Internal server error'}
+            result = {'success': False, 'error': 'Internal server error'}
+
+        return request.make_response(
+            json.dumps({'result': result}),
+            headers=[('Content-Type', 'application/json')] + self._cors_headers()
+        )
 
     @http.route('/chatbot/snippet', type='http', auth='public', website=True)
     def chatbot_snippet_info(self, **kwargs):

@@ -95,6 +95,17 @@
                         </setting>
                     </block>
 
+                    <!-- CORS Settings -->
+                    <block title="Embedded Widget (CORS)" id="chatbot_cors_settings">
+                        <setting string="Allowed Origins" help="Danh sách domain được phép nhúng chatbot, cách nhau bằng dấu phẩy. Ví dụ: https://abc.com, https://sub.xyz.com">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_cors_origins" class="w-100" placeholder="https://abc.com, https://sub.xyz.com"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+
                     <!-- Widget Contact Buttons -->
                     <block title="Widget Contact Buttons" id="chatbot_widget_contacts">
                         <setting string="Phone Number" help="Show phone button on chatbot widget (leave empty to hide)">

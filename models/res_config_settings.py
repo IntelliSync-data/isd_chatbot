@@ -76,6 +76,9 @@ class ResConfigSettings(models.TransientModel):
     chatbot_widget_zalo_link = fields.Char(string='Zalo Link', help='Show Zalo button on widget if set (e.g. https://zalo.me/xxx)')
     chatbot_widget_messenger_link = fields.Char(string='Messenger Link', help='Show Messenger button on widget if set (e.g. https://m.me/xxx)')
 
+    # CORS
+    chatbot_cors_origins = fields.Char(string='Allowed Origins', help='Danh sách domain được phép nhúng chatbot, cách nhau bằng dấu phẩy. Ví dụ: https://abc.com, https://sub.xyz.com')
+
     # Widget icons
     chatbot_widget_icon_toggle = fields.Many2one('ir.attachment', string='Toggle Icon')
     chatbot_widget_icon_chat = fields.Many2one('ir.attachment', string='Chat Icon')
@@ -108,6 +111,7 @@ class ResConfigSettings(models.TransientModel):
             chatbot_zalo_oa_secret_key=ICPSudo.get_param('isd_chatbot.zalo_oa_api_secret_key', default=''),
             chatbot_zalo_oa_api_token=ICPSudo.get_param('isd_chatbot.zalo_oa_api_token', default=''),
             chatbot_zalo_oa_api_refresh_token=ICPSudo.get_param('isd_chatbot.zalo_oa_api_refresh_token', default=''),
+            chatbot_cors_origins=ICPSudo.get_param('isd_chatbot.cors_origins', default=''),
             chatbot_widget_phone=ICPSudo.get_param('isd_chatbot.widget_phone', default=''),
             chatbot_widget_zalo_link=ICPSudo.get_param('isd_chatbot.widget_zalo_link', default=''),
             chatbot_widget_messenger_link=ICPSudo.get_param('isd_chatbot.widget_messenger_link', default=''),
@@ -140,6 +144,7 @@ class ResConfigSettings(models.TransientModel):
         ICPSudo.set_param('isd_chatbot.zalo_oa_api_secret_key', self.chatbot_zalo_oa_secret_key or '')
         ICPSudo.set_param('isd_chatbot.zalo_oa_api_token', self.chatbot_zalo_oa_api_token or '')
         ICPSudo.set_param('isd_chatbot.zalo_oa_api_refresh_token', self.chatbot_zalo_oa_api_refresh_token or '')
+        ICPSudo.set_param('isd_chatbot.cors_origins', self.chatbot_cors_origins or '')
         ICPSudo.set_param('isd_chatbot.widget_phone', self.chatbot_widget_phone or '')
         ICPSudo.set_param('isd_chatbot.widget_zalo_link', self.chatbot_widget_zalo_link or '')
         ICPSudo.set_param('isd_chatbot.widget_messenger_link', self.chatbot_widget_messenger_link or '')
