@@ -76,7 +76,7 @@ class InquiryAPIController(http.Controller):
             'write_date': inquiry.write_date.isoformat() if inquiry.write_date else None,
         }
 
-    @http.route('/api/inquiry', type='http', auth='public', methods=['POST'], csrf=False)
+    @http.route('/api/inquiry', type='http', auth='public', methods=['POST'], csrf=False, cors='*')
     def create_inquiry(self, **kwargs):
         """
         Create a new customer inquiry
@@ -155,7 +155,7 @@ class InquiryAPIController(http.Controller):
                 'message': 'Failed to create inquiry'
             }, status=500)
 
-    @http.route('/api/inquiry/<int:inquiry_id>', type='http', auth='public', methods=['GET'], csrf=False)
+    @http.route('/api/inquiry/<int:inquiry_id>', type='http', auth='public', methods=['GET'], csrf=False, cors='*')
     def get_inquiry(self, inquiry_id, **kwargs):
         """
         Get inquiry by ID
@@ -191,7 +191,7 @@ class InquiryAPIController(http.Controller):
                 'message': 'Failed to get inquiry'
             }, status=500)
 
-    @http.route('/api/inquiry/list', type='http', auth='public', methods=['GET'], csrf=False)
+    @http.route('/api/inquiry/list', type='http', auth='public', methods=['GET'], csrf=False, cors='*')
     def list_inquiries(self, **kwargs):
         """
         List inquiries with optional filters
@@ -261,7 +261,7 @@ class InquiryAPIController(http.Controller):
                 'message': 'Failed to list inquiries'
             }, status=500)
 
-    @http.route('/api/inquiry/<int:inquiry_id>', type='http', auth='public', methods=['PUT'], csrf=False)
+    @http.route('/api/inquiry/<int:inquiry_id>', type='http', auth='public', methods=['PUT'], csrf=False, cors='*')
     def update_inquiry(self, inquiry_id, **kwargs):
         """
         Update inquiry by ID
@@ -339,7 +339,7 @@ class InquiryAPIController(http.Controller):
                 'message': 'Failed to update inquiry'
             }, status=500)
 
-    @http.route('/api/inquiry/<int:inquiry_id>', type='http', auth='public', methods=['DELETE'], csrf=False)
+    @http.route('/api/inquiry/<int:inquiry_id>', type='http', auth='public', methods=['DELETE'], csrf=False, cors='*')
     def delete_inquiry(self, inquiry_id, **kwargs):
         """
         Delete inquiry by ID
@@ -379,7 +379,7 @@ class InquiryAPIController(http.Controller):
                 'message': 'Failed to delete inquiry'
             }, status=500)
 
-    @http.route('/api/inquiry/<int:inquiry_id>/analyze', type='http', auth='public', methods=['POST'], csrf=False)
+    @http.route('/api/inquiry/<int:inquiry_id>/analyze', type='http', auth='public', methods=['POST'], csrf=False, cors='*')
     def analyze_inquiry(self, inquiry_id, **kwargs):
         """
         Analyze inquiry message using AI
