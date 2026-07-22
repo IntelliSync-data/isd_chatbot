@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inquiry_api_doc_wizard_form" model="ir.ui.view">
+        <field name="name">inquiry.api.doc.wizard.form</field>
+        <field name="model">inquiry.api.doc.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Inquiry API Documentation">
+                <sheet>
+                    <field name="api_documentation" readonly="1" nolabel="1"/>
+                </sheet>
+                <footer>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inquiry_api_doc" model="ir.actions.act_window">
+        <field name="name">Inquiry API Documentation</field>
+        <field name="res_model">inquiry.api.doc.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_inquiry_api_doc_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

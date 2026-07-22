@@ -34,6 +34,7 @@
         'views/survey_mapping_views.xml',
         'views/inquiry_source_views.xml',
         'wizard/views/customer_inquiry_analyze_confirm_view.xml',
+        'wizard/views/inquiry_api_doc_wizard_view.xml',
     ],
     # 'assets': {
     #     'web.assets_frontend': [

@@ -60,10 +60,18 @@
               sequence="16"
               groups="group_chatbot_manager"/>
     
+    <!-- API Documentation Menu - Editor and above -->
+    <menuitem id="menu_inquiry_api_doc"
+              name="Inquiry API"
+              parent="menu_chatbot_config"
+              action="action_inquiry_api_doc"
+              sequence="20"
+              groups="group_chatbot_editor"/>
+
     <!-- Integration Menu - Manager only -->
-    <menuitem id="menu_chatbot_integration" 
-              name="Integration" 
-              parent="menu_chatbot_main" 
+    <menuitem id="menu_chatbot_integration"
+              name="Integration"
+              parent="menu_chatbot_main"
               sequence="30"
               groups="group_chatbot_manager"/>
 </odoo>
