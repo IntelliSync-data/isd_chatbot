@@ -211,7 +211,7 @@ class ChatbotController(http.Controller):
             .cb-fab-phone   { background: %s; }
             .cb-fab-zalo    { background: %s; font-weight: bold; font-size: 20px; }
             .cb-fab-messenger { background: %s; }
-            .cb-fab-toggle #cb-icon-plus image { width: 100%%; height: 100%%; }
+            .cb-fab-toggle #cb-icon-plus img { width: 100%%; height: 100%%; }
             .cb-fab-chat img, .cb-fab-phone img, .cb-fab-zalo img, .cb-fab-messenger img {
                 width: 100%%;
                 height: 100%%;
