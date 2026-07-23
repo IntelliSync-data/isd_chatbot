@@ -108,59 +108,88 @@
 
                     <!-- Widget Contact Buttons -->
                     <block title="Widget Contact Buttons" id="chatbot_widget_contacts">
-                        <setting string="Phone Number" help="Show phone button on chatbot widget (leave empty to hide)">
+                        <!-- General -->
+                        <setting string="General" help="Toggle and Chat button icons and background colors">
                             <div class="content-group">
-                                <div class="mt8">
-                                    <field name="chatbot_widget_phone" placeholder="+84901234567"/>
+                                <div class="row mt8">
+                                    <div class="col-6">
+                                        <label for="chatbot_widget_icon_toggle" string="Toggle Icon"/>
+                                        <field name="chatbot_widget_icon_toggle" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="chatbot_widget_icon_chat" string="Chat Icon"/>
+                                        <field name="chatbot_widget_icon_chat" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                    </div>
+                                </div>
+                                <div class="row mt8">
+                                    <div class="col-6">
+                                        <label for="chatbot_widget_bg_toggle" string="Toggle BG Color"/>
+                                        <field name="chatbot_widget_bg_toggle" widget="color" placeholder="#875a7b"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="chatbot_widget_bg_chat" string="Chat BG Color"/>
+                                        <field name="chatbot_widget_bg_chat" widget="color" placeholder="#875a7b"/>
+                                    </div>
                                 </div>
                             </div>
                         </setting>
-                        <setting string="Zalo Link" help="Show Zalo button on chatbot widget (leave empty to hide)">
+
+                        <!-- Phone -->
+                        <setting string="Phone" help="Phone button settings (leave phone number empty to hide)">
                             <div class="content-group">
-                                <div class="mt8">
-                                    <field name="chatbot_widget_zalo_link" placeholder="https://zalo.me/xxx"/>
+                                <div class="row mt8">
+                                    <div class="col-4">
+                                        <label for="chatbot_widget_phone" string="Phone Number"/>
+                                        <field name="chatbot_widget_phone" placeholder="+84901234567"/>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="chatbot_widget_icon_phone" string="Phone Icon"/>
+                                        <field name="chatbot_widget_icon_phone" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="chatbot_widget_bg_phone" string="Phone BG Color"/>
+                                        <field name="chatbot_widget_bg_phone" widget="color" placeholder="#25D366"/>
+                                    </div>
                                 </div>
                             </div>
                         </setting>
-                        <setting string="Messenger Link" help="Show Messenger button on chatbot widget (leave empty to hide)">
+
+                        <!-- Zalo -->
+                        <setting string="Zalo" help="Zalo button settings (leave link empty to hide)">
                             <div class="content-group">
-                                <div class="mt8">
-                                    <field name="chatbot_widget_messenger_link" placeholder="https://m.me/xxx"/>
+                                <div class="row mt8">
+                                    <div class="col-4">
+                                        <label for="chatbot_widget_zalo_link" string="Zalo Link"/>
+                                        <field name="chatbot_widget_zalo_link" placeholder="https://zalo.me/xxx"/>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="chatbot_widget_icon_zalo" string="Zalo Icon"/>
+                                        <field name="chatbot_widget_icon_zalo" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="chatbot_widget_bg_zalo" string="Zalo BG Color"/>
+                                        <field name="chatbot_widget_bg_zalo" widget="color" placeholder="#0068FF"/>
+                                    </div>
                                 </div>
                             </div>
                         </setting>
-                        <setting string="Toggle Icon" help="Icon for the main toggle button">
+
+                        <!-- Messenger -->
+                        <setting string="Messenger" help="Messenger button settings (leave link empty to hide)">
                             <div class="content-group">
-                                <div class="mt8">
-                                    <field name="chatbot_widget_icon_toggle" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
-                                </div>
-                            </div>
-                        </setting>
-                        <setting string="Chat Icon" help="Icon for the chat button">
-                            <div class="content-group">
-                                <div class="mt8">
-                                    <field name="chatbot_widget_icon_chat" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
-                                </div>
-                            </div>
-                        </setting>
-                        <setting string="Phone Icon" help="Icon for the phone button">
-                            <div class="content-group">
-                                <div class="mt8">
-                                    <field name="chatbot_widget_icon_phone" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
-                                </div>
-                            </div>
-                        </setting>
-                        <setting string="Zalo Icon" help="Icon for the Zalo button">
-                            <div class="content-group">
-                                <div class="mt8">
-                                    <field name="chatbot_widget_icon_zalo" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
-                                </div>
-                            </div>
-                        </setting>
-                        <setting string="Messenger Icon" help="Icon for the Messenger button">
-                            <div class="content-group">
-                                <div class="mt8">
-                                    <field name="chatbot_widget_icon_messenger" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                <div class="row mt8">
+                                    <div class="col-4">
+                                        <label for="chatbot_widget_messenger_link" string="Messenger Link"/>
+                                        <field name="chatbot_widget_messenger_link" placeholder="https://m.me/xxx"/>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="chatbot_widget_icon_messenger" string="Messenger Icon"/>
+                                        <field name="chatbot_widget_icon_messenger" widget="many2one_avatar" domain="[('mimetype', 'like', 'image/')]"/>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="chatbot_widget_bg_messenger" string="Messenger BG Color"/>
+                                        <field name="chatbot_widget_bg_messenger" widget="color" placeholder="#0084FF"/>
+                                    </div>
                                 </div>
                             </div>
                         </setting>

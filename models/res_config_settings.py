@@ -85,6 +85,13 @@ class ResConfigSettings(models.TransientModel):
     chatbot_widget_icon_phone = fields.Many2one('ir.attachment', string='Phone Icon')
     chatbot_widget_icon_zalo = fields.Many2one('ir.attachment', string='Zalo Icon')
     chatbot_widget_icon_messenger = fields.Many2one('ir.attachment', string='Messenger Icon')
+
+    # Widget background colors
+    chatbot_widget_bg_toggle = fields.Char(string='Toggle Background Color', help='Background color for toggle button (e.g. #875a7b)')
+    chatbot_widget_bg_chat = fields.Char(string='Chat Background Color', help='Background color for chat button (e.g. #875a7b)')
+    chatbot_widget_bg_phone = fields.Char(string='Phone Background Color', help='Background color for phone button (e.g. #25D366)')
+    chatbot_widget_bg_zalo = fields.Char(string='Zalo Background Color', help='Background color for Zalo button (e.g. #0068FF)')
+    chatbot_widget_bg_messenger = fields.Char(string='Messenger Background Color', help='Background color for Messenger button (e.g. #0084FF)')
     # Get parameter values - Delegated to ChatbotConfig for centralized management
     @api.model
     def get_values(self):
@@ -120,6 +127,11 @@ class ResConfigSettings(models.TransientModel):
             chatbot_widget_icon_phone=int(ICPSudo.get_param('isd_chatbot.icon_phone_id', default=0)) or False,
             chatbot_widget_icon_zalo=int(ICPSudo.get_param('isd_chatbot.icon_zalo_id', default=0)) or False,
             chatbot_widget_icon_messenger=int(ICPSudo.get_param('isd_chatbot.icon_messenger_id', default=0)) or False,
+            chatbot_widget_bg_toggle=ICPSudo.get_param('isd_chatbot.bg_toggle', default=''),
+            chatbot_widget_bg_chat=ICPSudo.get_param('isd_chatbot.bg_chat', default=''),
+            chatbot_widget_bg_phone=ICPSudo.get_param('isd_chatbot.bg_phone', default=''),
+            chatbot_widget_bg_zalo=ICPSudo.get_param('isd_chatbot.bg_zalo', default=''),
+            chatbot_widget_bg_messenger=ICPSudo.get_param('isd_chatbot.bg_messenger', default=''),
         )
         return res
     
@@ -155,6 +167,11 @@ class ResConfigSettings(models.TransientModel):
             ('isd_chatbot.icon_zalo_id', self.chatbot_widget_icon_zalo),
             ('isd_chatbot.icon_messenger_id', self.chatbot_widget_icon_messenger),
         ]
+        ICPSudo.set_param('isd_chatbot.bg_toggle', self.chatbot_widget_bg_toggle or '')
+        ICPSudo.set_param('isd_chatbot.bg_chat', self.chatbot_widget_bg_chat or '')
+        ICPSudo.set_param('isd_chatbot.bg_phone', self.chatbot_widget_bg_phone or '')
+        ICPSudo.set_param('isd_chatbot.bg_zalo', self.chatbot_widget_bg_zalo or '')
+        ICPSudo.set_param('isd_chatbot.bg_messenger', self.chatbot_widget_bg_messenger or '')
         for param_key, attachment in icon_fields:
             ICPSudo.set_param(param_key, attachment.id if attachment else 0)
             if attachment:
