@@ -70,6 +70,12 @@ class ChatbotController(http.Controller):
         icon_zalo = icon_url('isd_chatbot.icon_zalo_id')
         icon_messenger = icon_url('isd_chatbot.icon_messenger_id')
 
+        bg_toggle = ICPSudo.get_param('isd_chatbot.bg_toggle', default='') or '#3d6b8c'
+        bg_chat = ICPSudo.get_param('isd_chatbot.bg_chat', default='') or '#3d6b8c'
+        bg_phone = ICPSudo.get_param('isd_chatbot.bg_phone', default='') or '#3d6b8c'
+        bg_zalo = ICPSudo.get_param('isd_chatbot.bg_zalo', default='') or '#3d6b8c'
+        bg_messenger = ICPSudo.get_param('isd_chatbot.bg_messenger', default='') or '#3d6b8c'
+
         js_content = """
 (function() {
     'use strict';
@@ -200,11 +206,11 @@ class ChatbotController(http.Controller):
                 color: white;
             }
             .cb-fab:hover { transform: scale(1.1); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
-            .cb-fab-toggle { background: #3d6b8c; width: 56px; height: 56px; padding: 0 }
-            .cb-fab-chat    { background: #3d6b8c; padding: 0; }
-            .cb-fab-phone   { background: #3d6b8c; }
-            .cb-fab-zalo    { background: #3d6b8c; font-weight: bold; font-size: 20px; }
-            .cb-fab-messenger { background: #3d6b8c; }
+            .cb-fab-toggle { background: %s; width: 56px; height: 56px; padding: 0 }
+            .cb-fab-chat    { background: %s; padding: 0; }
+            .cb-fab-phone   { background: %s; }
+            .cb-fab-zalo    { background: %s; font-weight: bold; font-size: 20px; }
+            .cb-fab-messenger { background: %s; }
             .cb-fab-toggle #cb-icon-plus image { width: 100%; height: 100%; }
             .cb-fab-chat img, .cb-fab-phone img, .cb-fab-zalo img, .cb-fab-messenger img {
                 width: 100%%;
@@ -452,7 +458,8 @@ class ChatbotController(http.Controller):
     }
     })();
         """ % (get_base_url() + '/chatbot/api', phone, zalo_link, messenger_link,
-               icon_toggle, icon_chat, icon_phone, icon_zalo, icon_messenger)
+               icon_toggle, icon_chat, icon_phone, icon_zalo, icon_messenger,
+               bg_toggle, bg_chat, bg_phone, bg_zalo, bg_messenger)
 
         return request.make_response(
             js_content,
