@@ -53,6 +53,16 @@
                         </setting>
                     </block>
                     
+                    <!-- Inquiry Button Visibility -->
+                    <block title="Inquiry Buttons" id="chatbot_inquiry_buttons">
+                        <setting string="Hide Analyze Button" help="Hide the Analyze button on customer inquiry views">
+                            <field name="chatbot_hide_analyze_button"/>
+                        </setting>
+                        <setting string="Hide Save to CRM Button" help="Hide the Save to CRM button on customer inquiry views">
+                            <field name="chatbot_hide_save_to_crm_button"/>
+                        </setting>
+                    </block>
+
                     <!-- OpenAI API Settings Section -->
                     <block title="OpenAI API Settings" id="chatbot_openai_settings">
                         <setting string="Enable OpenAI" help="Use OpenAI API for analyzing customer inquiries">
@@ -97,7 +107,7 @@
 
                     <!-- CORS Settings -->
                     <block title="Embedded Widget (CORS)" id="chatbot_cors_settings">
-                        <setting string="Allowed Origins" help="Danh sách domain được phép nhúng chatbot, cách nhau bằng dấu phẩy. Ví dụ: https://abc.com, https://sub.xyz.com">
+                        <setting string="Allowed Origins" help="List of domains allowed to embed the chatbot, separated by commas. Example: https://abc.com, https://sub.xyz.com">
                             <div class="content-group">
                                 <div class="mt8">
                                     <field name="chatbot_cors_origins" class="w-100" placeholder="https://abc.com, https://sub.xyz.com"/>

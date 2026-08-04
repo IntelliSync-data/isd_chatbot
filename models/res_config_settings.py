@@ -28,23 +28,23 @@ class ResConfigSettings(models.TransientModel):
         help='Message when no question pattern matches')
     
     chatbot_response_type = fields.Selection([
-        ('default', 'Hiển thị form thông tin'),
-        ('prompt', 'Yêu cầu nhập thông tin vào đoạn văn bản'),
-        ('none', 'Không yêu cầu thông tin')
-    ], string='Loại phản hồi khi không match', default='default',
-       help='Cách xử lý khi không có mẫu phù hợp')
+        ('default', 'Show information form'),
+        ('prompt', 'Request text input'),
+        ('none', 'No information required')
+    ], string='Response type when no match', default='default',
+       help='How to handle when no matching pattern is found')
     
     chatbot_prompt_message = fields.Text(
         string='Prompt Message',
-        help='Tin nhắn hướng dẫn khi chọ chế độ prompt')
+        help='Guide message when using prompt mode')
     
     chatbot_end_message = fields.Text(
         string='End Message',
-        help='Tin nhắn kết thúc cuộc hội thoại khi đã thu thập đủ thông tin')
+        help='End message when enough information has been collected')
 
     chatbot_missing_contact_message = fields.Text(
         string='Missing Contact Message',
-        help='Tin nhắn yêu cầu bổ sung khi thiếu cả email và số điện thoại')
+        help='Message requesting additional info when both email and phone are missing')
 
     # NLP Settings
     chatbot_language_model = fields.Selection([
@@ -77,7 +77,7 @@ class ResConfigSettings(models.TransientModel):
     chatbot_widget_messenger_link = fields.Char(string='Messenger Link', help='Show Messenger button on widget if set (e.g. https://m.me/xxx)')
 
     # CORS
-    chatbot_cors_origins = fields.Char(string='Allowed Origins', help='Danh sách domain được phép nhúng chatbot, cách nhau bằng dấu phẩy. Ví dụ: https://abc.com, https://sub.xyz.com')
+    chatbot_cors_origins = fields.Char(string='Allowed Origins', help='List of domains allowed to embed the chatbot, separated by commas. Example: https://abc.com, https://sub.xyz.com')
 
     # Widget icons
     chatbot_widget_icon_toggle = fields.Many2one('ir.attachment', string='Toggle Icon')
@@ -85,6 +85,14 @@ class ResConfigSettings(models.TransientModel):
     chatbot_widget_icon_phone = fields.Many2one('ir.attachment', string='Phone Icon')
     chatbot_widget_icon_zalo = fields.Many2one('ir.attachment', string='Zalo Icon')
     chatbot_widget_icon_messenger = fields.Many2one('ir.attachment', string='Messenger Icon')
+
+    # Inquiry Button Visibility
+    chatbot_hide_analyze_button = fields.Boolean(
+        string='Hide Analyze Button',
+        help='Hide the Analyze button on customer inquiries')
+    chatbot_hide_save_to_crm_button = fields.Boolean(
+        string='Hide Save to CRM Button',
+        help='Hide the Save to CRM button on customer inquiries')
 
     # Widget background colors
     chatbot_widget_bg_toggle = fields.Char(string='Toggle Background Color', help='Background color for toggle button (e.g. #875a7b)')
@@ -107,11 +115,11 @@ class ResConfigSettings(models.TransientModel):
             chatbot_openai_enabled=config.openai_enabled or False,
             chatbot_openai_api_key=config.openai_api_key or '',
             chatbot_openai_model=config.openai_model or 'gpt-3.5-turbo',
-            chatbot_default_message=ICPSudo.get_param('isd_chatbot.default_message', default='Tôi không hiểu câu hỏi của bạn. Vui lòng đặt lại thông tin chi tiết hơn.'),
+            chatbot_default_message=ICPSudo.get_param('isd_chatbot.default_message', default='I don\'t understand your question. Please provide more detailed information.'),
             chatbot_response_type=ICPSudo.get_param('isd_chatbot.response_type', default='default'),
-            chatbot_prompt_message=ICPSudo.get_param('isd_chatbot.prompt_message', default='Vui lòng cung cấp thông tin của bạn (tên, email, số điện thoại, thời gian phù hợp để liên hệ):'),
-            chatbot_end_message=ICPSudo.get_param('isd_chatbot.end_message', default='Cảm ơn! Thông tin của bạn đã được ghi nhận. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể. Cuộc hội thoại đã kết thúc.'),
-            chatbot_missing_contact_message=ICPSudo.get_param('isd_chatbot.missing_contact_message', default='Hãy bổ sung email hoặc số điện thoại để chúng tôi có thể liên hệ với bạn.'),
+            chatbot_prompt_message=ICPSudo.get_param('isd_chatbot.prompt_message', default='Please provide your information (name, email, phone number, preferred contact time):'),
+            chatbot_end_message=ICPSudo.get_param('isd_chatbot.end_message', default='Thank you! Your information has been recorded. We will contact you as soon as possible. The conversation has ended.'),
+            chatbot_missing_contact_message=ICPSudo.get_param('isd_chatbot.missing_contact_message', default='Please provide your email or phone number so we can contact you.'),
             chatbot_language_model=ICPSudo.get_param('isd_chatbot.language_model', default='vi_core_news_lg'),
             chatbot_threshold=float(ICPSudo.get_param('isd_chatbot.threshold', default=0.8)),
             chatbot_zalo_oa_app_id=ICPSudo.get_param('isd_chatbot.zalo_oa_app_id', default=''),
@@ -127,6 +135,8 @@ class ResConfigSettings(models.TransientModel):
             chatbot_widget_icon_phone=int(ICPSudo.get_param('isd_chatbot.icon_phone_id', default=0)) or False,
             chatbot_widget_icon_zalo=int(ICPSudo.get_param('isd_chatbot.icon_zalo_id', default=0)) or False,
             chatbot_widget_icon_messenger=int(ICPSudo.get_param('isd_chatbot.icon_messenger_id', default=0)) or False,
+            chatbot_hide_analyze_button=ICPSudo.get_param('isd_chatbot.hide_analyze_button', default=False) == 'True',
+            chatbot_hide_save_to_crm_button=ICPSudo.get_param('isd_chatbot.hide_save_to_crm_button', default=False) == 'True',
             chatbot_widget_bg_toggle=ICPSudo.get_param('isd_chatbot.bg_toggle', default=''),
             chatbot_widget_bg_chat=ICPSudo.get_param('isd_chatbot.bg_chat', default=''),
             chatbot_widget_bg_phone=ICPSudo.get_param('isd_chatbot.bg_phone', default=''),
@@ -167,6 +177,8 @@ class ResConfigSettings(models.TransientModel):
             ('isd_chatbot.icon_zalo_id', self.chatbot_widget_icon_zalo),
             ('isd_chatbot.icon_messenger_id', self.chatbot_widget_icon_messenger),
         ]
+        ICPSudo.set_param('isd_chatbot.hide_analyze_button', self.chatbot_hide_analyze_button)
+        ICPSudo.set_param('isd_chatbot.hide_save_to_crm_button', self.chatbot_hide_save_to_crm_button)
         ICPSudo.set_param('isd_chatbot.bg_toggle', self.chatbot_widget_bg_toggle or '')
         ICPSudo.set_param('isd_chatbot.bg_chat', self.chatbot_widget_bg_chat or '')
         ICPSudo.set_param('isd_chatbot.bg_phone', self.chatbot_widget_bg_phone or '')

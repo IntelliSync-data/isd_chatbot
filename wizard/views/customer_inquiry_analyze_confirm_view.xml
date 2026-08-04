@@ -4,12 +4,12 @@
         <field name="name">customer.inquiry.analyze.confirm.form</field>
         <field name="model">customer.inquiry.analyze.confirm</field>
         <field name="arch" type="xml">
-            <form string="Xác nhận phân tích lại">
+            <form string="Confirm Re-analysis">
                 <sheet>
                     <div class="alert alert-warning" role="alert">
-                        Inquiry này đã được phân tích trước đó vào lúc: <field name="analysis_date" readonly="1"/>
+                        This inquiry was previously analyzed on: <field name="analysis_date" readonly="1"/>
                         <br/>
-                        Các thông tin hiện tại sẽ bị ghi đè nếu phát hiện dữ liệu mới từ tin nhắn.
+                        Current information will be overwritten if new data is found in the message.
                     </div>
                     <group>
                         <group>
@@ -26,8 +26,8 @@
                     </group>
                 </sheet>
                 <footer>
-                    <button string="Phân tích lại" name="action_confirm" type="object" class="btn-primary"/>
-                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                    <button string="Re-analyze" name="action_confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>

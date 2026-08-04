@@ -88,10 +88,10 @@ class InquiryAPIController(http.Controller):
             "name": "Nguyen Van A",                      // Required
             "email": "test@example.com",                 // Optional (need email OR phone)
             "phone": "0123456789",                       // Optional (need email OR phone)
-            "message": "Tôi muốn tư vấn du học",        // Optional
+            "message": "I would like a consultation",      // Optional
             "consultation_datetime": "2026-01-10 14:30:00",  // Optional
             "source_code": "manual",                     // Optional: chatbot, manual, zalo, facebook, website, phone_call, email, other
-            "assigned_user_email": "admin@example.com"   // Optional: Email của user được assign
+            "assigned_user_email": "admin@example.com"   // Optional: Email of the assigned user
         }
 
         Response:

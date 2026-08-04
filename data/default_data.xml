@@ -8,7 +8,7 @@
 hello
 hi
 chào bạn</field>
-        <field name="answer">Xin chào! Tôi là chatbot hỗ trợ của IntelliSync Data. Tôi có thể giúp gì cho bạn hôm nay?</field>
+        <field name="answer">Hello! I am IntelliSync Data's support chatbot. How can I help you today?</field>
         <field name="threshold">0.45</field>
         <field name="active">True</field>
     </record>
@@ -21,7 +21,7 @@ dịch vụ
 làm gì
 hoạt động
 business</field>
-        <field name="answer">Chúng tôi cung cấp các giải pháp phần mềm tùy chỉnh, phát triển ứng dụng web và mobile, tư vấn chuyển đổi số cho doanh nghiệp. Bạn có muốn biết thêm chi tiết về dịch vụ nào không?</field>
+        <field name="answer">We provide custom software solutions, web and mobile application development, and digital transformation consulting for businesses. Would you like to know more about any specific service?</field>
         <field name="threshold">0.60</field>
         <field name="active">True</field>
     </record>
@@ -35,11 +35,11 @@ email
 phone
 địa chỉ
 address</field>
-        <field name="answer">Bạn có thể liên hệ với chúng tôi qua:
+        <field name="answer">You can contact us via:
 - Email: info@intellisyncdata.com
-- Điện thoại: 0123-456-789
-- Địa chỉ: 123 Đường ABC, Quận 1, TP.HCM
-Hoặc để lại thông tin, chúng tôi sẽ liên hệ lại với bạn.</field>
+- Phone: 0123-456-789
+- Address: 123 ABC Street, District 1, HCMC
+Or leave your information and we will get back to you.</field>
         <field name="threshold">0.60</field>
         <field name="active">True</field>
     </record>
@@ -52,7 +52,7 @@ thời gian
 hỗ trợ
 mở cửa
 working hours</field>
-        <field name="answer">Chúng tôi làm việc từ thứ 2 đến thứ 6, từ 8:00 sáng đến 17:30 chiều. Ngoài giờ làm việc, bạn có thể để lại thông tin và chúng tôi sẽ liên hệ lại sớm nhất có thể.</field>
+        <field name="answer">We are open Monday through Friday, from 8:00 AM to 5:30 PM. Outside business hours, you can leave your information and we will get back to you as soon as possible.</field>
         <field name="threshold">0.6</field>
         <field name="active">True</field>
     </record>
@@ -66,7 +66,7 @@ goodbye
 cảm ơn
 thank you
 thanks</field>
-        <field name="answer">Cảm ơn bạn đã liên hệ với chúng tôi! Chúc bạn một ngày tốt lành. Nếu có thêm câu hỏi, đừng ngần ngại liên hệ lại nhé!</field>
+        <field name="answer">Thank you for contacting us! Have a great day. If you have any more questions, don't hesitate to reach out!</field>
         <field name="threshold">0.6</field>
         <field name="active">True</field>
     </record>
@@ -78,10 +78,10 @@ thanks</field>
         <field name="question">default</field>
         <field name="answer">Default response</field>
         <field name="threshold">0.8</field>
-        <field name="default_message">Tôi không hiểu câu hỏi của bạn. Vui lòng để lại thông tin liên hệ để được tư vấn cụ thể hơn.</field>
+        <field name="default_message">I didn't understand your question. Please leave your contact information for more specific assistance.</field>
         <field name="language_model">en_core_web_sm</field>
         <field name="response_type">form</field>
-        <field name="prompt_message">Vui lòng cung cấp họ tên, email và số điện thoại của bạn để chúng tôi liên hệ hỗ trợ.</field>
+        <field name="prompt_message">Please provide your full name, email, and phone number so we can contact you for support.</field>
         <field name="active">True</field>
     </record>
 </odoo>

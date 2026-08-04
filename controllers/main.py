@@ -127,7 +127,7 @@ class ChatbotController(http.Controller):
         }
         if (CHATBOT_CONFIG.phone) {
             contactBtns.push(`
-                <a href="tel:${CHATBOT_CONFIG.phone}" class="cb-fab cb-fab-phone" title="Gọi điện">
+                <a href="tel:${CHATBOT_CONFIG.phone}" class="cb-fab cb-fab-phone" title="Call">
                     ${icon('phone')}
                 </a>`);
         }
@@ -147,25 +147,25 @@ class ChatbotController(http.Controller):
             </button>
             <div id="chatbot-window" class="chatbot-window" style="display:none;">
                 <div class="chatbot-header">
-                    <h3>Hỗ trợ trực tuyến</h3>
+                    <h3>Live Support</h3>
                     <button id="chatbot-close" class="chatbot-close">${FALLBACK_ICONS.close}</button>
                 </div>
                 <div id="chatbot-messages" class="chatbot-messages">
                     <div class="message bot-message">
-                        <div class="message-content">Xin chào! Tôi có thể giúp gì cho bạn?</div>
+                        <div class="message-content">Hello! How can I help you?</div>
                     </div>
                 </div>
                 <div class="chatbot-input-area">
-                    <input type="text" id="chatbot-input" placeholder="Nhập tin nhắn..." />
-                    <button id="chatbot-send">Gửi</button>
+                    <input type="text" id="chatbot-input" placeholder="Type a message..." />
+                    <button id="chatbot-send">Send</button>
                 </div>
                 <div id="customer-form" class="customer-form" style="display:none;">
-                    <h4>Vui lòng để lại thông tin để được tư vấn</h4>
-                    <input type="text" id="customer-name" placeholder="Họ và tên *" required />
+                    <h4>Please leave your information for consultation</h4>
+                    <input type="text" id="customer-name" placeholder="Full name *" required />
                     <input type="email" id="customer-email" placeholder="Email *" required />
-                    <input type="tel" id="customer-phone" placeholder="Số điện thoại" />
+                    <input type="tel" id="customer-phone" placeholder="Phone number" />
                     <input type="datetime-local" id="customer-datetime" />
-                    <button id="submit-info">Gửi thông tin</button>
+                    <button id="submit-info">Submit</button>
                 </div>
             </div>
         </div>`;
@@ -404,10 +404,10 @@ class ChatbotController(http.Controller):
                     window.chatbotUserInfoMode = false;
                 }
             } else {
-                addMessage('Xin lỗi, có lỗi xảy ra. Vui lòng thử lại.', 'bot');
+                addMessage('Sorry, an error occurred. Please try again.', 'bot');
             }
         } catch (error) {
-            addMessage('Xin lỗi, có lỗi xảy ra. Vui lòng thử lại sau.', 'bot');
+            addMessage('Sorry, an error occurred. Please try again later.', 'bot');
         }
     }
 
@@ -430,7 +430,7 @@ class ChatbotController(http.Controller):
         const email    = document.getElementById('customer-email').value.trim();
         const phone    = document.getElementById('customer-phone').value.trim();
         const datetime = document.getElementById('customer-datetime').value;
-        if (!name || !email) { alert('Vui lòng nhập họ tên và email'); return; }
+        if (!name || !email) { alert('Please enter your name and email'); return; }
         try {
             const response = await fetch(CHATBOT_CONFIG.apiUrl + '/submit_info', {
                 method: 'POST',
@@ -439,15 +439,15 @@ class ChatbotController(http.Controller):
             });
             const data = await response.json();
             if (data.result.success) {
-                addMessage('Cảm ơn! Thông tin của bạn đã được ghi nhận. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.', 'bot');
+                addMessage('Thank you! Your information has been recorded. We will contact you as soon as possible.', 'bot');
                 document.getElementById('customer-form').style.display = 'none';
                 document.querySelector('.chatbot-input-area').style.display = 'flex';
                 ['customer-name','customer-email','customer-phone','customer-datetime'].forEach(id => document.getElementById(id).value = '');
             } else {
-                alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                alert('An error occurred. Please try again.');
             }
         } catch (error) {
-            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+            alert('An error occurred. Please try again.');
         }
     }
 
@@ -487,7 +487,7 @@ class ChatbotController(http.Controller):
                 _logger.warning(f"Invalid input received: {errors}")
                 return {'success': False, 'error': 'Invalid input data'}
 
-            # Log để debug (using sanitized data)
+            # Log for debug (using sanitized data)
             _logger.info(f"Chatbot received kwargs: {sanitized_data}")
 
             message = sanitized_data.get('message', '').strip()
@@ -553,7 +553,7 @@ class ChatbotController(http.Controller):
 
                 if missing_fields:
                     missing = ', '.join(missing_fields)
-                    result = {'success': False, 'error': f'Vui lòng cung cấp: {missing}', 'missing_fields': missing_fields}
+                    result = {'success': False, 'error': f'Please provide: {missing}', 'missing_fields': missing_fields}
                 else:
                     vals = {
                         'name': name,
@@ -662,26 +662,22 @@ class ChatbotController(http.Controller):
         _logger.info(
             f"PROMPT MODE: Processing raw message without analysis: {message}")
 
-        # Sử dụng phương thức create trực tiếp thay vì thông qua create_from_chatbot để tránh phân tích
         CustomerInquiry = request.env['customer.inquiry'].sudo()
 
-        # Create customer inquiry với tin nhắn gốc
-        # Sử dụng chuỗi rỗng cho các trường bắt buộc name và email
         vals = {
-            'name': ' ',   # Chuỗi rỗng cho trường bắt buộc
-            'email': ' ',  # Chuỗi rỗng cho trường bắt buộc
-            'message': message,    # Lưu tin nhắn gốc của khách hàng
-            'state': 'new',       # Trạng thái mới
+            'name': ' ',
+            'email': ' ',
+            'message': message,
+            'state': 'new',
         }
 
         try:
-            # Tạo inquiry trực tiếp không thông qua phương thức có thể gọi phân tích
             inquiry = CustomerInquiry.create(vals)
             _logger.info(
                 f"PROMPT MODE: Successfully created raw customer inquiry, ID: {inquiry.id}, with message: {message}")
             return {
                 'success': True,
-                'response': "Cảm ơn! Thông tin của bạn đã được ghi nhận. Chúng tôi sẽ liên hệ với bạn sớm.",
+                'response': "Thank you! Your information has been recorded. We will contact you soon.",
                 'response_type': 'none'
             }
         except Exception as e:
@@ -689,7 +685,7 @@ class ChatbotController(http.Controller):
                 f"PROMPT MODE ERROR: Failed to create inquiry: {str(e)}")
             return {
                 'success': False,
-                'error': 'Không thể lưu thông tin. Vui lòng thử lại.'
+                'error': 'Unable to save information. Please try again.'
             }
 
     @http.route('/isd_chatbot/webhook', type='http', auth='public', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], csrf=False)

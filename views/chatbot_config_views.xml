@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Chatbot Config List View: Chỉ hiển thị các dòng Q&A thông thường -->
+    <!-- Chatbot Config List View: Only show regular Q&A entries -->
     <record id="view_chatbot_config_list" model="ir.ui.view">
         <field name="name">chatbot.config.list</field>
         <field name="model">chatbot.config</field>
@@ -16,7 +16,7 @@
         </field>
     </record>
 
-    <!-- Chatbot Config Form View cho Q&A thông thường -->
+    <!-- Chatbot Config Form View for regular Q&A -->
     <record id="view_chatbot_config_form" model="ir.ui.view">
         <field name="name">chatbot.config.form</field>
         <field name="model">chatbot.config</field>
@@ -77,9 +77,9 @@
                             
                             <div class="col-12 col-lg-6 mb-4">
                                 <div>
-                                    <label for="response_type" class="fw-bold" style="font-size: 15px; display: block;">Loại phản hồi khi không match</label>
+                                    <label for="response_type" class="fw-bold" style="font-size: 15px; display: block;">Response Type When No Match</label>
                                     <div style="color: #6c757d; margin-bottom: 8px;">
-                                        Cách xử lý khi không tìm thấy câu trả lời phù hợp
+                                        How to handle when no matching answer is found
                                     </div>
                                     <field name="response_type" widget="radio" options="{'horizontal': true}"/>
                                 </div>
@@ -89,7 +89,7 @@
                                 <div>
                                     <label for="prompt_message" class="fw-bold" style="font-size: 15px; display: block;">Prompt Message</label>
                                     <div style="color: #6c757d; margin-bottom: 8px;">
-                                        Tin nhắn hướng dẫn khi sử dụng chế độ prompt
+                                        Guidance message when using prompt mode
                                     </div>
                                     <field name="prompt_message" widget="text" placeholder="Enter prompt message..."/>
                                 </div>
@@ -99,7 +99,7 @@
                                 <div>
                                     <label for="end_message" class="fw-bold" style="font-size: 15px; display: block;">End Message</label>
                                     <div style="color: #6c757d; margin-bottom: 8px;">
-                                        Tin nhắn kết thúc cuộc hội thoại khi đã thu thập đủ thông tin (tên, email, số điện thoại)
+                                        Message shown when conversation ends after collecting complete information (name, email, phone)
                                     </div>
                                     <field name="end_message" widget="text" placeholder="Enter end message..."/>
                                 </div>

@@ -29,23 +29,23 @@ class ChatbotConfig(models.Model):
     
     # Configuration fields
     default_message = fields.Text('Default Message', 
-                                default="Tôi không hiểu câu hỏi của bạn. Vui lòng để lại thông tin để được tư vấn.",
+                                default="I don't understand your question. Please leave your information for consultation.",
                                 help="Message when no pattern matches")
     response_type = fields.Selection([
-        ('form', 'Hiển thị form thông tin'),
-        ('prompt', 'Yêu cầu nhập thông tin dạng văn bản'),
-        ('none', 'Không yêu cầu thông tin')
-    ], string='Loại phản hồi khi không match', default='form',
-        help="Cách xử lý khi không tìm thấy câu trả lời phù hợp")
+        ('form', 'Show information form'),
+        ('prompt', 'Request text input'),
+        ('none', 'No information required')
+    ], string='Response type when no match', default='form',
+        help="How to handle when no matching answer is found")
     prompt_message = fields.Text('Prompt Message',
-                               default="Vui lòng cung cấp thông tin của bạn (tên, email, số điện thoại, thời gian phù hợp để liên hệ):",
-                               help="Tin nhắn hướng dẫn khi sử dụng chế độ prompt")
+                               default="Please provide your information (name, email, phone number, preferred contact time):",
+                               help="Guide message when using prompt mode")
     end_message = fields.Text('End Message',
-                             default="Cảm ơn! Thông tin của bạn đã được ghi nhận. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể. Cuộc hội thoại đã kết thúc.",
-                             help="Tin nhắn kết thúc cuộc hội thoại khi đã thu thập đủ thông tin")
+                             default="Thank you! Your information has been recorded. We will contact you as soon as possible. The conversation has ended.",
+                             help="End message when enough information has been collected")
     missing_contact_message = fields.Text('Missing Contact Message',
-                             default="Hãy bổ sung email hoặc số điện thoại để chúng tôi có thể liên hệ với bạn.",
-                             help="Tin nhắn yêu cầu bổ sung khi thiếu cả email và số điện thoại")
+                             default="Please provide your email or phone number so we can contact you.",
+                             help="Message requesting additional info when both email and phone are missing")
     language_model = fields.Selection([
         ('en_core_web_sm', 'English Small'),
         ('en_core_web_md', 'English Medium'),
@@ -164,7 +164,7 @@ class ChatbotConfig(models.Model):
     def _load_spacy_model(self):
         """Load spaCy model based on configuration"""
         try:
-            # Ưu tiên lấy từ Default Settings
+            # Prioritize from Default Settings
             default_config = self.search([('name', '=', 'Default Settings')], limit=1)
             if default_config and default_config.language_model:
                 model_name = default_config.language_model
@@ -184,11 +184,11 @@ class ChatbotConfig(models.Model):
     
     def _get_default_message(self):
         """Get default message when no match found"""
-        # Đọc từ ir.config_parameter global settings
+        # Read from ir.config_parameter global settings
         IrConfigParam = self.env['ir.config_parameter'].sudo()
         default_message = IrConfigParam.get_param('isd_chatbot.default_message')
         
-        # Kiểm tra nếu có giá trị từ ir.config_parameter
+        # Check if value exists from ir.config_parameter
         if default_message:
             return default_message
         
@@ -202,7 +202,7 @@ class ChatbotConfig(models.Model):
         if config and config.default_message:
             return config.default_message
             
-        return "Tôi không hiểu câu hỏi của bạn. Vui lòng để lại thông tin để được tư vấn."
+        return "I don't understand your question. Please leave your information for consultation."
     
     def _set_zalo_oa_api_tokens(self, api_token, refresh_token):
         """Set Zalo OA API Token and Refresh Token in configuration"""
@@ -214,11 +214,11 @@ class ChatbotConfig(models.Model):
     
     def _get_zalo_oa_api_token(self):
         """Get Zalo OA API Token from configuration"""
-        # Đọc từ ir.config_parameter global settings
+        # Read from ir.config_parameter global settings
         IrConfigParam = self.env['ir.config_parameter'].sudo()
         api_token = IrConfigParam.get_param('isd_chatbot.zalo_oa_api_token')
         
-        # Kiểm tra nếu có giá trị từ ir.config_parameter
+        # Check if value exists from ir.config_parameter
         if api_token:
             return api_token
         
@@ -236,11 +236,11 @@ class ChatbotConfig(models.Model):
     
     def _get_zalo_oa_api_refresh_token(self):
         """Get Zalo OA API Token from configuration"""
-        # Đọc từ ir.config_parameter global settings
+        # Read from ir.config_parameter global settings
         IrConfigParam = self.env['ir.config_parameter'].sudo()
         refresh_token = IrConfigParam.get_param('isd_chatbot.zalo_oa_api_refresh_token')
         
-        # Kiểm tra nếu có giá trị từ ir.config_parameter
+        # Check if value exists from ir.config_parameter
         if refresh_token:
             return refresh_token
         
@@ -258,11 +258,11 @@ class ChatbotConfig(models.Model):
     
     def _get_zalo_oa_api_secret_key(self):
         """Get Zalo OA API Secret Key from configuration"""
-        # Đọc từ ir.config_parameter global settings
+        # Read from ir.config_parameter global settings
         IrConfigParam = self.env['ir.config_parameter'].sudo()
         secret_key = IrConfigParam.get_param('isd_chatbot.zalo_oa_api_secret_key')
         
-        # Kiểm tra nếu có giá trị từ ir.config_parameter
+        # Check if value exists from ir.config_parameter
         if secret_key:
             return secret_key
         
@@ -280,11 +280,11 @@ class ChatbotConfig(models.Model):
     
     def _get_zalo_oa_app_id(self):
         """Get Zalo OA API App ID from configuration"""
-        # Đọc từ ir.config_parameter global settings
+        # Read from ir.config_parameter global settings
         IrConfigParam = self.env['ir.config_parameter'].sudo()
         app_id = IrConfigParam.get_param('isd_chatbot.zalo_oa_app_id')
 
-        # Kiểm tra nếu có giá trị từ ir.config_parameter
+        # Check if value exists from ir.config_parameter
         if app_id:
             return app_id
 
@@ -302,11 +302,11 @@ class ChatbotConfig(models.Model):
         
     def _get_response_type(self):
         """Get response type when no match found"""
-        # Đọc từ ir.config_parameter global settings
+        # Read from ir.config_parameter global settings
         IrConfigParam = self.env['ir.config_parameter'].sudo()
         response_type = IrConfigParam.get_param('isd_chatbot.response_type')
         
-        # Kiểm tra nếu có giá trị hợp lệ từ ir.config_parameter
+        # Check if valid value exists from ir.config_parameter
         if response_type in ['default', 'prompt', 'none']:
             return response_type
         
@@ -324,11 +324,11 @@ class ChatbotConfig(models.Model):
         
     def _get_end_message(self):
         """Get end message when conversation should end"""
-        # Đọc từ ir.config_parameter global settings
+        # Read from ir.config_parameter global settings
         IrConfigParam = self.env['ir.config_parameter'].sudo()
         end_message = IrConfigParam.get_param('isd_chatbot.end_message')
 
-        # Kiểm tra nếu có giá trị từ ir.config_parameter
+        # Check if value exists from ir.config_parameter
         if end_message:
             return end_message
 
@@ -342,15 +342,15 @@ class ChatbotConfig(models.Model):
         if config and config.end_message:
             return config.end_message
 
-        return "Cảm ơn! Thông tin của bạn đã được ghi nhận. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể. Cuộc hội thoại đã kết thúc."
+        return "Thank you! Your information has been recorded. We will contact you as soon as possible. The conversation has ended."
 
     def _get_missing_contact_message(self):
         """Get message when user provides name but missing both email and phone"""
-        # Đọc từ ir.config_parameter global settings
+        # Read from ir.config_parameter global settings
         IrConfigParam = self.env['ir.config_parameter'].sudo()
         missing_contact_message = IrConfigParam.get_param('isd_chatbot.missing_contact_message')
 
-        # Kiểm tra nếu có giá trị từ ir.config_parameter
+        # Check if value exists from ir.config_parameter
         if missing_contact_message:
             return missing_contact_message
 
@@ -364,7 +364,7 @@ class ChatbotConfig(models.Model):
         if config and config.missing_contact_message:
             return config.missing_contact_message
 
-        return "Hãy bổ sung email hoặc số điện thoại để chúng tôi có thể liên hệ với bạn."
+        return "Please provide your email or phone number so we can contact you."
 
     @api.model
     def open_global_settings(self):
@@ -377,11 +377,11 @@ class ChatbotConfig(models.Model):
                 'question': 'default',
                 'answer': 'Default response',
                 'threshold': 0.8,
-                'default_message': 'Tôi không hiểu câu hỏi của bạn. Vui lòng để lại thông tin liên hệ để được tư vấn cụ thể hơn.',
+                'default_message': 'I don\'t understand your question. Please leave your contact information for more specific consultation.',
                 'language_model': 'en_core_web_sm',
                 'response_type': 'form',
-                'prompt_message': 'Vui lòng cung cấp họ tên, email và số điện thoại của bạn để chúng tôi liên hệ hỗ trợ.',
-                'end_message': 'Cảm ơn! Thông tin của bạn đã được ghi nhận. Chúng tôi sẽ liên hệ với bạn sớm nhất có thể. Cuộc hội thoại đã kết thúc.',
+                'prompt_message': 'Please provide your name, email, and phone number so we can contact you for support.',
+                'end_message': 'Thank you! Your information has been recorded. We will contact you as soon as possible. The conversation has ended.',
                 'active': True,
             })
         
@@ -511,21 +511,21 @@ class ChatbotConfig(models.Model):
                 _logger.info(f"Extracted phone: {result['phone']}")
             
             # Extract datetime - looking for Vietnamese date format and time
-            # Pattern for dates like: 25/06/2025, 25-06-2025, 25.06.2025 with optional time like 22:00 or 22 giờ
+            # Pattern for dates like: 25/06/2025, 25-06-2025, 25.06.2025 with optional time like 22:00 or 22h
             _logger.info(f"Original message for datetime extraction: '{message}'")
             
             date_patterns = [
-                # Pattern for DD/MM/YYYY with giờ format - high priority
+                # Pattern for DD/MM/YYYY with hour format - high priority
                 r'(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})(?:[\s,]+(?:lúc|at)?\s*(\d{1,2})\s*(?:gi[oơờ]|h))',
                 # Pattern for DD/MM/YYYY + optional time with hours and minutes
                 r'(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})(?:[\s,]+(?:lúc|at)?\s*(\d{1,2})[:h](\d{2}))?',
-                # Pattern for common Vietnamese words for dates with giờ format
+                # Pattern for common Vietnamese date keywords with hour format
                 r'ngày\s+(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})(?:[\s,]+(?:lúc|at)?\s*(\d{1,2})\s*(?:gi[oơờ]|h))',
                 # Pattern for common Vietnamese words for dates
                 r'ngày\s+(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})(?:[\s,]+(?:lúc|at)?\s*(\d{1,2})[:h](\d{2}))?',
-                # Pattern with book/đặt keywords with giờ format
+                # Pattern with book/schedule keywords with hour format
                 r'(?:book|đặt|đặt lịch)[\s:]+(?:ngày\s+)?(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})(?:[\s,]+(?:lúc|at)?\s*(\d{1,2})\s*(?:gi[oơờ]|h))',
-                # Pattern with book/đặt keywords
+                # Pattern with book/schedule keywords
                 r'(?:book|đặt|đặt lịch)[\s:]+(?:ngày\s+)?(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})(?:[\s,]+(?:lúc|at)?\s*(\d{1,2})[:h](\d{2}))?'
             ]
             
@@ -569,20 +569,20 @@ class ChatbotConfig(models.Model):
             name_candidates = []
             seen_tokens = set()
             
-            # Trích xuất tên sử dụng NER của spaCy
-            # Tìm entity PERSON trong document đã xử lý bởi spaCy
+            # Extract name using spaCy NER
+            # Find PERSON entity in spaCy-processed document
             names = [ent.text for ent in doc.ents if ent.label_ == "PERSON"]
             
-            # Log các thực thể được nhận dạng
+            # Log detected entities
             for ent in doc.ents:
                 _logger.info(f"Detected entity: '{ent.text}' with label '{ent.label_}'")
             
             if names:
-                # Nếu tìm thấy thực thể PERSON, sử dụng nó
-                result['name'] = names[0]  # Lấy tên đầu tiên được nhận dạng
+                # If PERSON entity found, use it
+                result['name'] = names[0]  # Use first recognized name
                 _logger.info(f"Found name via NER: '{result['name']}'")
             else:
-                # Nếu không tìm thấy thực thể PERSON, sử dụng phương pháp dự phòng
+                # If no PERSON entity found, use fallback method
                 _logger.info("No PERSON entity found, using fallback name extraction method")
                 
                 # Clean message for name extraction by removing detected parts

@@ -14,7 +14,7 @@ class CustomerInquiry(models.Model):
     _description = 'Customer Inquiry from Chatbot'
     _order = 'create_date desc'
     _rec_name = 'name'
-    # Đã loại bỏ kế thừa mail.thread và mail.activity.mixin
+    # Removed mail.thread and mail.activity.mixin inheritance
     # _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char('Name', required=True)
@@ -57,6 +57,10 @@ class CustomerInquiry(models.Model):
     can_invite_user = fields.Boolean('Can Invite User', compute='_compute_can_invite_user')
     invite_button_text = fields.Char('Invite Button Text', compute='_compute_invite_button_text')
 
+    # Computed fields for button visibility from settings
+    hide_analyze_button = fields.Boolean('Hide Analyze', compute='_compute_button_visibility')
+    hide_save_to_crm_button = fields.Boolean('Hide Save to CRM', compute='_compute_button_visibility')
+
     @api.constrains('email', 'phone')
     def _check_contact_info(self):
         """Ensure at least email or phone is provided"""
@@ -73,11 +77,11 @@ class CustomerInquiry(models.Model):
             if not record.name or not record.email:
                 raise UserError(_("Name and email are required to save to CRM."))
                 
-            # Tìm contact hiện có hoặc tạo mới
+            # Find existing contact or create new one
             partner = self.env['res.partner'].search([('email', '=', record.email)], limit=1)
             
             if not partner:
-                # Tạo contact mới
+                # Create new contact
                 partner_vals = {
                     'name': record.name,
                     'email': record.email,
@@ -87,7 +91,7 @@ class CustomerInquiry(models.Model):
                 partner = self.env['res.partner'].create(partner_vals)
                 _logger.info(f"Created new partner {partner.id} for customer inquiry {record.id}")
             else:
-                # Cập nhật contact nếu cần
+                # Update contact if needed
                 update_vals = {}
                 if not partner.phone and record.phone:
                     update_vals['phone'] = record.phone.replace(' ', '') if record.phone else False
@@ -95,7 +99,7 @@ class CustomerInquiry(models.Model):
                     partner.write(update_vals)
                     _logger.info(f"Updated existing partner {partner.id} for customer inquiry {record.id}")
             
-            # Tìm team mặc định (Sales)
+            # Find default team (Sales)
             sales_team = self.env['crm.team'].search([('name', 'like', 'Sales')], limit=1)
             
             # Create CRM lead
@@ -106,9 +110,9 @@ class CustomerInquiry(models.Model):
                 'phone': record.phone.replace(' ', '') if record.phone else False,
                 'description': record.message or f"Customer inquiry from chatbot on {record.create_date}",
                 'user_id': record.assigned_user_id.id if record.assigned_user_id else False,
-                'team_id': sales_team.id if sales_team else False,  # Gán team Sales nếu tìm thấy
+                'team_id': sales_team.id if sales_team else False,  # Assign Sales team if found
                 'stage_id': self._get_default_crm_stage(),
-                'partner_id': partner.id,  # Liên kết với contact
+                'partner_id': partner.id,  # Link to contact
             }
             
             lead = self.env['crm.lead'].create(lead_vals)
@@ -119,7 +123,7 @@ class CustomerInquiry(models.Model):
             
             _logger.info(f"Created CRM lead {lead.id} for customer inquiry {record.id}")
             
-            # Hiển thị thông báo thành công
+            # Display success notification
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
@@ -208,7 +212,7 @@ class CustomerInquiry(models.Model):
                 # Send confirmation emails with meeting link
                 record._send_booking_confirmation_emails(videocall_url)
                 
-                # Hiển thị thông báo thành công
+                # Display success notification
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
@@ -226,7 +230,7 @@ class CustomerInquiry(models.Model):
     def _send_booking_confirmation_emails(self, videocall_url=None):
         """Send booking confirmation emails to customer and assigned user"""
         self.ensure_one()
-        # Lưu videocall_url vào mô tả event để email template có thể sử dụng
+        # Save videocall_url to event description so email template can use it
         if videocall_url and self.calendar_event_id:
             old_description = self.calendar_event_id.description or ''
             if "Join the videocall:" not in old_description and videocall_url not in old_description:
@@ -319,7 +323,7 @@ class CustomerInquiry(models.Model):
     def action_save(self):
         """Save consultation date and time from wizard"""
         self.ensure_one()
-        # Đơn giản chỉ cần đóng dialog, dữ liệu đã được lưu tự động
+        # Simply close the dialog, data is saved automatically
         return {'type': 'ir.actions.act_window_close'}
     
     def action_analyze_message(self):
@@ -597,6 +601,15 @@ class CustomerInquiry(models.Model):
         return user and not user.login_date
     
     @api.depends('email')
+    def _compute_button_visibility(self):
+        """Read button visibility settings from config params"""
+        ICP = self.env['ir.config_parameter'].sudo()
+        hide_analyze = ICP.get_param('isd_chatbot.hide_analyze_button', 'False') == 'True'
+        hide_crm = ICP.get_param('isd_chatbot.hide_save_to_crm_button', 'False') == 'True'
+        for record in self:
+            record.hide_analyze_button = hide_analyze
+            record.hide_save_to_crm_button = hide_crm
+
     def _compute_can_invite_user(self):
         """Compute if user can be invited based on email"""
         for record in self:
