@@ -93,6 +93,9 @@ class ResConfigSettings(models.TransientModel):
     chatbot_hide_save_to_crm_button = fields.Boolean(
         string='Hide Save to CRM Button',
         help='Hide the Save to CRM button on customer inquiries')
+    chatbot_hide_invite_user_button = fields.Boolean(
+        string='Hide Invite User Button',
+        help='Hide the Invite User / Resend Invite button on customer inquiries')
 
     # Widget background colors
     chatbot_widget_bg_toggle = fields.Char(string='Toggle Background Color', help='Background color for toggle button (e.g. #875a7b)')
@@ -137,6 +140,7 @@ class ResConfigSettings(models.TransientModel):
             chatbot_widget_icon_messenger=int(ICPSudo.get_param('isd_chatbot.icon_messenger_id', default=0)) or False,
             chatbot_hide_analyze_button=ICPSudo.get_param('isd_chatbot.hide_analyze_button', default=False) == 'True',
             chatbot_hide_save_to_crm_button=ICPSudo.get_param('isd_chatbot.hide_save_to_crm_button', default=False) == 'True',
+            chatbot_hide_invite_user_button=ICPSudo.get_param('isd_chatbot.hide_invite_user_button', default=False) == 'True',
             chatbot_widget_bg_toggle=ICPSudo.get_param('isd_chatbot.bg_toggle', default=''),
             chatbot_widget_bg_chat=ICPSudo.get_param('isd_chatbot.bg_chat', default=''),
             chatbot_widget_bg_phone=ICPSudo.get_param('isd_chatbot.bg_phone', default=''),
@@ -179,6 +183,7 @@ class ResConfigSettings(models.TransientModel):
         ]
         ICPSudo.set_param('isd_chatbot.hide_analyze_button', self.chatbot_hide_analyze_button)
         ICPSudo.set_param('isd_chatbot.hide_save_to_crm_button', self.chatbot_hide_save_to_crm_button)
+        ICPSudo.set_param('isd_chatbot.hide_invite_user_button', self.chatbot_hide_invite_user_button)
         ICPSudo.set_param('isd_chatbot.bg_toggle', self.chatbot_widget_bg_toggle or '')
         ICPSudo.set_param('isd_chatbot.bg_chat', self.chatbot_widget_bg_chat or '')
         ICPSudo.set_param('isd_chatbot.bg_phone', self.chatbot_widget_bg_phone or '')

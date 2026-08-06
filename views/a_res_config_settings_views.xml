@@ -61,6 +61,9 @@
                         <setting string="Hide Save to CRM Button" help="Hide the Save to CRM button on customer inquiry views">
                             <field name="chatbot_hide_save_to_crm_button"/>
                         </setting>
+                        <setting string="Hide Invite User Button" help="Hide the Invite User / Resend Invite button on customer inquiry views">
+                            <field name="chatbot_hide_invite_user_button"/>
+                        </setting>
                     </block>
 
                     <!-- OpenAI API Settings Section -->

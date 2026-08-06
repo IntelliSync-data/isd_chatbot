@@ -28,12 +28,13 @@
                 <button name="action_booking" type="object" string="Booking"
                         class="btn-success" invisible="not consultation_datetime or (source_id.code == 'chatbot' and not analyzed)"/>
                 <button name="action_invite_user" type="object" string="Invite User" class="btn-secondary"
-                        invisible="not can_invite_user or invite_button_text == 'Resend Invite' or (source_id.code == 'chatbot' and not analyzed)"/>
+                        invisible="hide_invite_user_button or not can_invite_user or invite_button_text == 'Resend Invite' or (source_id.code == 'chatbot' and not analyzed)"/>
                 <button name="action_invite_user" type="object" string="Resend Invite" class="btn-warning"
-                        invisible="not can_invite_user or invite_button_text != 'Resend Invite' or (source_id.code == 'chatbot' and not analyzed)"/>
+                        invisible="hide_invite_user_button or not can_invite_user or invite_button_text != 'Resend Invite' or (source_id.code == 'chatbot' and not analyzed)"/>
                 <field name="analyzed" invisible="1" optional="hide"/>
                 <field name="hide_analyze_button" invisible="1"/>
                 <field name="hide_save_to_crm_button" invisible="1"/>
+                <field name="hide_invite_user_button" invisible="1"/>
             </list>
         </field>
     </record>
@@ -48,6 +49,7 @@
                 <header>
                     <field name="hide_analyze_button" invisible="1"/>
                     <field name="hide_save_to_crm_button" invisible="1"/>
+                    <field name="hide_invite_user_button" invisible="1"/>
                     <button name="action_analyze_message" type="object" string="Analyze"
                             class="btn-info" invisible="hide_analyze_button or not message or analyzed or source_id.code == 'manual'"/>
                     <button name="action_save_to_crm" type="object" string="Save to CRM"
@@ -57,9 +59,9 @@
                     <button name="action_booking" type="object" string="Booking"
                             class="btn-success" invisible="not consultation_datetime or (source_id.code == 'chatbot' and not analyzed)"/>
                     <button name="action_invite_user" type="object" string="Invite User"
-                            class="btn-secondary" invisible="not can_invite_user or invite_button_text == 'Resend Invite' or (source_id.code == 'chatbot' and not analyzed)"/>
+                            class="btn-secondary" invisible="hide_invite_user_button or not can_invite_user or invite_button_text == 'Resend Invite' or (source_id.code == 'chatbot' and not analyzed)"/>
                     <button name="action_invite_user" type="object" string="Resend Invite"
-                            class="btn-warning" invisible="not can_invite_user or invite_button_text != 'Resend Invite' or (source_id.code == 'chatbot' and not analyzed)"/>
+                            class="btn-warning" invisible="hide_invite_user_button or not can_invite_user or invite_button_text != 'Resend Invite' or (source_id.code == 'chatbot' and not analyzed)"/>
                     <field name="state" widget="statusbar" statusbar_visible="new,saved_to_crm,booked"/>
                 </header>
                 <sheet>

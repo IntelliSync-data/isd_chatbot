@@ -60,6 +60,7 @@ class CustomerInquiry(models.Model):
     # Computed fields for button visibility from settings
     hide_analyze_button = fields.Boolean('Hide Analyze', compute='_compute_button_visibility')
     hide_save_to_crm_button = fields.Boolean('Hide Save to CRM', compute='_compute_button_visibility')
+    hide_invite_user_button = fields.Boolean('Hide Invite User', compute='_compute_button_visibility')
 
     @api.constrains('email', 'phone')
     def _check_contact_info(self):
@@ -606,9 +607,11 @@ class CustomerInquiry(models.Model):
         ICP = self.env['ir.config_parameter'].sudo()
         hide_analyze = ICP.get_param('isd_chatbot.hide_analyze_button', 'False') == 'True'
         hide_crm = ICP.get_param('isd_chatbot.hide_save_to_crm_button', 'False') == 'True'
+        hide_invite = ICP.get_param('isd_chatbot.hide_invite_user_button', 'False') == 'True'
         for record in self:
             record.hide_analyze_button = hide_analyze
             record.hide_save_to_crm_button = hide_crm
+            record.hide_invite_user_button = hide_invite
 
     def _compute_can_invite_user(self):
         """Compute if user can be invited based on email"""
