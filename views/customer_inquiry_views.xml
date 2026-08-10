@@ -31,10 +31,10 @@
                         invisible="hide_invite_user_button or not can_invite_user or invite_button_text == 'Resend Invite' or (source_id.code == 'chatbot' and not analyzed)"/>
                 <button name="action_invite_user" type="object" string="Resend Invite" class="btn-warning"
                         invisible="hide_invite_user_button or not can_invite_user or invite_button_text != 'Resend Invite' or (source_id.code == 'chatbot' and not analyzed)"/>
-                <field name="analyzed" invisible="1" optional="hide"/>
-                <field name="hide_analyze_button" invisible="1"/>
-                <field name="hide_save_to_crm_button" invisible="1"/>
-                <field name="hide_invite_user_button" invisible="1"/>
+                <field name="analyzed" column_invisible="True"/>
+                <field name="hide_analyze_button" column_invisible="True"/>
+                <field name="hide_save_to_crm_button" column_invisible="True"/>
+                <field name="hide_invite_user_button" column_invisible="True"/>
             </list>
         </field>
     </record>

@@ -69,12 +69,33 @@ class CustomerInquiry(models.Model):
             if not record.email and not record.phone:
                 raise UserError(_("At least email or phone number must be provided."))
 
+    def _check_assigned_user(self, next_action):
+        """Check if user is assigned, if not open assign wizard."""
+        self.ensure_one()
+        if not self.assigned_user_id:
+            return {
+                'name': _('Assign User'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'inquiry.assign.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_inquiry_id': self.id,
+                    'default_next_action': next_action,
+                },
+            }
+        return None
+
     def action_save_to_crm(self):
         """Save customer inquiry to CRM as a lead and create/update contact"""
         for record in self:
+            assign_action = record._check_assigned_user('save_to_crm')
+            if assign_action:
+                return assign_action
+
             if record.crm_lead_id:
                 raise UserError(_("This inquiry has already been saved to CRM."))
-            
+
             if not record.name or not record.email:
                 raise UserError(_("Name and email are required to save to CRM."))
                 
@@ -150,6 +171,10 @@ class CustomerInquiry(models.Model):
     def action_booking(self):
         """Create calendar booking with discuss meeting link and send confirmation emails"""
         for record in self:
+            assign_action = record._check_assigned_user('booking')
+            if assign_action:
+                return assign_action
+
             # Validate email before proceeding
             if not record.email:
                 raise UserError(_("Email is required to create a booking."))

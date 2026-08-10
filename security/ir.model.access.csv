@@ -28,3 +28,4 @@ access_survey_question_mapping_manager,survey.question.mapping.manager,model_sur
 access_survey_question_mapping_editor,survey.question.mapping.editor,model_survey_question_mapping,group_chatbot_editor,1,1,1,1
 access_survey_question_mapping_user,survey.question.mapping.user,model_survey_question_mapping,group_chatbot_user,1,0,0,0
 access_inquiry_api_doc_wizard,inquiry.api.doc.wizard,model_inquiry_api_doc_wizard,group_chatbot_editor,1,1,1,1
+access_inquiry_assign_wizard_user,inquiry.assign.wizard.user,model_inquiry_assign_wizard,group_chatbot_user,1,1,1,1

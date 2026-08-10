@@ -2,3 +2,4 @@
 
 from . import customer_inquiry_analyze_confirm
 from . import inquiry_api_doc_wizard
+from . import inquiry_assign_wizard
