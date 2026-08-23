@@ -28,6 +28,7 @@ class ChatbotService:
             'conversation_id': conversation.id,
             'message_type': 'user',
             'content': message,
+            'external_message_id': kwargs.get('external_message_id') or False,
         }])
 
         # First, always try to extract user information from the message
@@ -59,17 +60,18 @@ class ChatbotService:
                 missing_contact_msg = chatbot_config._get_missing_contact_message()
 
                 # Save bot response
-                env['chatbot.message'].sudo().create([{
+                bot_missing = env['chatbot.message'].sudo().create([{
                     'conversation_id': conversation.id,
                     'message_type': 'bot',
                     'content': missing_contact_msg,
+                    'response_type': 'prompt',
                 }])
 
                 return ChatResponseDTO(
-                    message=missing_contact_msg,
-                    response_type='prompt',  # Still show form to collect info
+                    bot_message=bot_missing,
+                    session_id=conversation.session_id,
+                    customer_inquiry_created=False,
                     conversation_ended=False,
-                    customer_inquiry_created=False
                 )
 
             # If we have name AND at least email OR phone, save the inquiry
@@ -290,10 +292,144 @@ class ZaloChatbotServiceAdapter(ChatbotService):
         return n_access_token, n_refresh_token
 
 
+class FacebookChatbotServiceAdapter(ChatbotService):
+    _graph_version = "v21.0"
+
+    def _facebook_session_id(self, session_id, **kwargs):
+        sender = kwargs.get('facebook_sender_id') or session_id or ''
+        sender = str(sender)
+        if sender.startswith('facebook:'):
+            return sender
+        return 'facebook:%s' % sender if sender else session_id
+
+    def _get_or_create_conversation(self, session_id, **kwargs):
+        kwargs['source_code'] = 'facebook'
+        return super()._get_or_create_conversation(
+            self._facebook_session_id(session_id, **kwargs), **kwargs)
+
+    def chat(self, message: str, session_id: str, **kwargs) -> ChatResponseDTO:
+        env = self._env
+        mid = kwargs.get('external_message_id')
+        if mid:
+            existing = env['chatbot.message'].sudo().search(
+                [('external_message_id', '=', mid)], limit=1)
+            if existing:
+                conversation = existing.conversation_id
+                last_bot = env['chatbot.message'].sudo().search([
+                    ('conversation_id', '=', conversation.id),
+                    ('message_type', '=', 'bot'),
+                ], order='id desc', limit=1)
+                return ChatResponseDTO(
+                    bot_message=last_bot or existing,
+                    session_id=conversation.session_id,
+                    customer_inquiry_created=False,
+                    conversation_ended=conversation.status == 'ended',
+                )
+
+        response_dto = super().chat(message, session_id, **kwargs)
+        sender_id = kwargs.get('facebook_sender_id') or ''
+        bot_message = response_dto.bot_message
+        text = bot_message.content if bot_message else ''
+        self.last_send_status = None
+        if sender_id and text:
+            self.last_send_status = self.send_reply(sender_id, text)
+            if self.last_send_status:
+                _logger.warning("Facebook outbound send status: %s", self.last_send_status)
+        return response_dto
+
+    def _get_session_request(self) -> requests.Session:
+        session = requests.Session()
+        retries = Retry(
+            total=3,
+            backoff_factor=1,
+            status_forcelist=[502, 503, 504],
+            allowed_methods=["HEAD", "GET", "OPTIONS", "POST"]
+        )
+        adapter = HTTPAdapter(max_retries=retries)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        return session
+
+    def _graph_messages_url(self):
+        return "https://graph.facebook.com/%s/me/messages" % self._graph_version
+
+    def _send_facebook_message(self, sender_id: str, text: str, token: str = None) -> Optional[str]:
+        chatbot_config = self._env['chatbot.config'].sudo()
+        access_token = token or chatbot_config._get_facebook_page_access_token() or ''
+        if not access_token:
+            _logger.error("Facebook send skipped: missing page access token")
+            return 'unconfigured'
+        payload = json.dumps({
+            "recipient": {"id": sender_id},
+            "messaging_type": "RESPONSE",
+            "message": {"text": text},
+        })
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer %s' % access_token,
+        }
+        try:
+            res = self._get_session_request().post(
+                self._graph_messages_url(), headers=headers, data=payload, timeout=15)
+        except Exception as exc:
+            _logger.error("Failed to send Facebook message: %s", exc)
+            return 'error'
+        try:
+            data = res.json()
+        except ValueError:
+            data = {}
+        if res.status_code == 200 and not data.get('error'):
+            return None
+        err = data.get('error') or {}
+        code = err.get('code')
+        _logger.error(
+            "Failed to send Facebook message: %s - %s", res.status_code, res.text)
+        if code == 190:
+            return 'expired'
+        return 'error'
+
+    def _refresh_page_token(self) -> str:
+        chatbot_config = self._env['chatbot.config'].sudo()
+        app_id = chatbot_config._get_facebook_app_id()
+        app_secret = chatbot_config._get_facebook_app_secret()
+        current = chatbot_config._get_facebook_page_access_token()
+        if not (app_id and app_secret and current):
+            return ''
+        url = "https://graph.facebook.com/%s/oauth/access_token" % self._graph_version
+        params = {
+            'grant_type': 'fb_exchange_token',
+            'client_id': app_id,
+            'client_secret': app_secret,
+            'fb_exchange_token': current,
+        }
+        try:
+            res = self._get_session_request().get(url, params=params, timeout=15)
+            data = res.json()
+        except Exception as exc:
+            _logger.error("Facebook token refresh failed: %s", exc)
+            return ''
+        new_token = data.get('access_token') or ''
+        if new_token:
+            chatbot_config._set_facebook_page_access_token(new_token)
+        return new_token
+
+    def send_reply(self, sender_id: str, text: str) -> Optional[str]:
+        """Send text; on OAuth 190 refresh once and resend once. Returns error key or None."""
+        status = self._send_facebook_message(sender_id, text)
+        if status != 'expired':
+            return status
+        new_token = self._refresh_page_token()
+        if not new_token:
+            return 'expired'
+        return self._send_facebook_message(sender_id, text, token=new_token)
+
+
 class ChatbotServiceFactory:
     @staticmethod
     def get_service(provider: str = "default", env: Any = None) -> ChatbotService:
         if provider == 'zalo':
             return ZaloChatbotServiceAdapter(env=env)
+        if provider == 'facebook':
+            return FacebookChatbotServiceAdapter(env=env)
 
         return ChatbotService(env=env)
