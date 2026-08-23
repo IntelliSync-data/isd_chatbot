@@ -8,6 +8,7 @@
             <list string="Webhook Logs" default_order="create_date desc">
                 <field name="webhook_id"/>
                 <field name="http_method" widget="badge"/>
+                <field name="merchant" optional="show"/>
                 <field name="status" widget="badge" 
                        decoration-success="status == 'processed'"
                        decoration-info="status == 'received'"
@@ -52,6 +53,7 @@
                     <group>
                         <group name="webhook_info" string="Request Information">
                             <field name="http_method"/>
+                            <field name="merchant"/>
                             <field name="full_url"/>
                             <field name="webhook_type"/>
                             <field name="event_type"/>
