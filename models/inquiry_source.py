@@ -34,6 +34,7 @@ class InquirySource(models.Model):
             {'name': 'Chatbot', 'code': 'chatbot', 'sequence': 1},
             {'name': 'Manual Entry', 'code': 'manual', 'sequence': 2},
             {'name': 'Zalo', 'code': 'zalo', 'sequence': 3},
+            {'name': 'Facebook', 'code': 'facebook', 'sequence': 4},
         ]
 
         for source_data in default_sources:

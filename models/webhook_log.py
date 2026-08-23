@@ -76,6 +76,11 @@ class WebhookLog(models.Model):
         string='Event Type',
         help='Event type if specified in payload'
     )
+
+    merchant = fields.Char(
+        string='Merchant',
+        help='Platform split from query merchant (zalo or facebook)',
+    )
     
     status = fields.Selection([
         ('received', 'Received'),
