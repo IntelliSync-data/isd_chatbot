@@ -71,6 +71,29 @@ class ResConfigSettings(models.TransientModel):
                                             help="API Refresh Token for Zalo OA integration",
                                             )
 
+    chatbot_facebook_enabled = fields.Boolean(
+        'Enable Facebook Page Inbox',
+        help='Receive and reply to Facebook Page messages')
+    chatbot_facebook_page_id = fields.Char(
+        'Facebook Page ID',
+        help='Optional Page ID; events for other Pages are ignored')
+    chatbot_facebook_page_access_token = fields.Char(
+        'Facebook Page Access Token',
+        help='Page access token for sending Messenger replies')
+    chatbot_facebook_app_id = fields.Char(
+        'Facebook App ID',
+        help='Meta App ID used to refresh an expired Page token')
+    chatbot_facebook_app_secret = fields.Char(
+        'Facebook App Secret',
+        help='Meta App secret for webhook signatures and token exchange')
+    chatbot_facebook_verify_token = fields.Char(
+        'Facebook Verify Phrase',
+        help='Phrase Meta sends on the webhook subscription check')
+    chatbot_facebook_webhook_url = fields.Char(
+        'Facebook Receive Address',
+        compute='_compute_facebook_webhook_url',
+        help='Paste this URL into the Meta App webhook callback')
+
     # Widget contact buttons
     chatbot_widget_phone = fields.Char(string='Phone Number', help='Show phone button on widget if set (e.g. +84901234567)')
     chatbot_widget_zalo_link = fields.Char(string='Zalo Link', help='Show Zalo button on widget if set (e.g. https://zalo.me/xxx)')
@@ -146,8 +169,21 @@ class ResConfigSettings(models.TransientModel):
             chatbot_widget_bg_phone=ICPSudo.get_param('isd_chatbot.bg_phone', default=''),
             chatbot_widget_bg_zalo=ICPSudo.get_param('isd_chatbot.bg_zalo', default=''),
             chatbot_widget_bg_messenger=ICPSudo.get_param('isd_chatbot.bg_messenger', default=''),
+            chatbot_facebook_enabled=ICPSudo.get_param('isd_chatbot.facebook_enabled', default=False) == 'True',
+            chatbot_facebook_page_id=ICPSudo.get_param('isd_chatbot.facebook_page_id', default=''),
+            chatbot_facebook_page_access_token=ICPSudo.get_param('isd_chatbot.facebook_page_access_token', default=''),
+            chatbot_facebook_app_id=ICPSudo.get_param('isd_chatbot.facebook_app_id', default=''),
+            chatbot_facebook_app_secret=ICPSudo.get_param('isd_chatbot.facebook_app_secret', default=''),
+            chatbot_facebook_verify_token=ICPSudo.get_param('isd_chatbot.facebook_verify_token', default=''),
         )
         return res
+
+    @api.depends()
+    def _compute_facebook_webhook_url(self):
+        base = self.env['ir.config_parameter'].sudo().get_param('web.base.url', '') or ''
+        url = '%s/isd_chatbot/webhook?merchant=facebook' % base.rstrip('/')
+        for rec in self:
+            rec.chatbot_facebook_webhook_url = url
     
     # Set parameter values - Delegated to ChatbotConfig for centralized management
     def set_values(self):
@@ -170,6 +206,12 @@ class ResConfigSettings(models.TransientModel):
         ICPSudo.set_param('isd_chatbot.zalo_oa_api_secret_key', self.chatbot_zalo_oa_secret_key or '')
         ICPSudo.set_param('isd_chatbot.zalo_oa_api_token', self.chatbot_zalo_oa_api_token or '')
         ICPSudo.set_param('isd_chatbot.zalo_oa_api_refresh_token', self.chatbot_zalo_oa_api_refresh_token or '')
+        ICPSudo.set_param('isd_chatbot.facebook_enabled', self.chatbot_facebook_enabled)
+        ICPSudo.set_param('isd_chatbot.facebook_page_id', self.chatbot_facebook_page_id or '')
+        ICPSudo.set_param('isd_chatbot.facebook_page_access_token', self.chatbot_facebook_page_access_token or '')
+        ICPSudo.set_param('isd_chatbot.facebook_app_id', self.chatbot_facebook_app_id or '')
+        ICPSudo.set_param('isd_chatbot.facebook_app_secret', self.chatbot_facebook_app_secret or '')
+        ICPSudo.set_param('isd_chatbot.facebook_verify_token', self.chatbot_facebook_verify_token or '')
         ICPSudo.set_param('isd_chatbot.cors_origins', self.chatbot_cors_origins or '')
         ICPSudo.set_param('isd_chatbot.widget_phone', self.chatbot_widget_phone or '')
         ICPSudo.set_param('isd_chatbot.widget_zalo_link', self.chatbot_widget_zalo_link or '')
