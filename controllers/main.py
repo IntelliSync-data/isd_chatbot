@@ -77,6 +77,43 @@ class ChatbotController(http.Controller):
         bg_zalo = ICPSudo.get_param('isd_chatbot.bg_zalo', default='') or '#3d6b8c'
         bg_messenger = ICPSudo.get_param('isd_chatbot.bg_messenger', default='') or '#3d6b8c'
 
+        lang = kwargs.get('lang', 'vi')
+        translations = {
+            'vi': {
+                'header_title': 'Hỗ trợ trực tuyến',
+                'greeting': 'Xin chào! Tôi có thể giúp gì cho bạn?',
+                'input_placeholder': 'Nhập tin nhắn...',
+                'send': 'Gửi',
+                'form_heading': 'Vui lòng để lại thông tin để được tư vấn',
+                'name_placeholder': 'Họ và tên *',
+                'email_placeholder': 'Email *',
+                'phone_placeholder': 'Số điện thoại',
+                'submit': 'Gửi',
+                'error_msg': 'Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại.',
+                'error_msg_later': 'Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại sau.',
+                'validate_name_email': 'Vui lòng nhập họ tên và email',
+                'thank_you': 'Cảm ơn bạn! Thông tin của bạn đã được ghi nhận. Chúng tôi sẽ liên hệ với bạn sớm nhất.',
+                'form_error': 'Đã xảy ra lỗi. Vui lòng thử lại.',
+            },
+            'en': {
+                'header_title': 'Live Support',
+                'greeting': 'Hello! How can I help you?',
+                'input_placeholder': 'Type a message...',
+                'send': 'Send',
+                'form_heading': 'Please leave your information for consultation',
+                'name_placeholder': 'Full name *',
+                'email_placeholder': 'Email *',
+                'phone_placeholder': 'Phone number',
+                'submit': 'Submit',
+                'error_msg': 'Sorry, an error occurred. Please try again.',
+                'error_msg_later': 'Sorry, an error occurred. Please try again later.',
+                'validate_name_email': 'Please enter your name and email',
+                'thank_you': 'Thank you! Your information has been recorded. We will contact you as soon as possible.',
+                'form_error': 'An error occurred. Please try again.',
+            },
+        }
+        t_json = json.dumps(translations.get(lang, translations['vi']), ensure_ascii=False)
+
         js_content = """
 (function() {
     'use strict';
@@ -95,6 +132,8 @@ class ChatbotController(http.Controller):
             messenger: '%s',
         },
     };
+
+    const T = %s;
 
     // ── Icons ──────────────────────────────────────────────────────────────────
     const FALLBACK_ICONS = {
@@ -148,25 +187,25 @@ class ChatbotController(http.Controller):
             </button>
             <div id="chatbot-window" class="chatbot-window" style="display:none;">
                 <div class="chatbot-header">
-                    <h3>Live Support</h3>
+                    <h3>${T.header_title}</h3>
                     <button id="chatbot-close" class="chatbot-close">${FALLBACK_ICONS.close}</button>
                 </div>
                 <div id="chatbot-messages" class="chatbot-messages">
                     <div class="message bot-message">
-                        <div class="message-content">Hello! How can I help you?</div>
+                        <div class="message-content">${T.greeting}</div>
                     </div>
                 </div>
                 <div class="chatbot-input-area">
-                    <input type="text" id="chatbot-input" placeholder="Type a message..." />
-                    <button id="chatbot-send">Send</button>
+                    <input type="text" id="chatbot-input" placeholder="${T.input_placeholder}" />
+                    <button id="chatbot-send">${T.send}</button>
                 </div>
                 <div id="customer-form" class="customer-form" style="display:none;">
-                    <h4>Please leave your information for consultation</h4>
-                    <input type="text" id="customer-name" placeholder="Full name *" required />
-                    <input type="email" id="customer-email" placeholder="Email *" required />
-                    <input type="tel" id="customer-phone" placeholder="Phone number" />
+                    <h4>${T.form_heading}</h4>
+                    <input type="text" id="customer-name" placeholder="${T.name_placeholder}" required />
+                    <input type="email" id="customer-email" placeholder="${T.email_placeholder}" required />
+                    <input type="tel" id="customer-phone" placeholder="${T.phone_placeholder}" />
                     <input type="datetime-local" id="customer-datetime" />
-                    <button id="submit-info">Submit</button>
+                    <button id="submit-info">${T.submit}</button>
                 </div>
             </div>
         </div>`;
@@ -405,10 +444,10 @@ class ChatbotController(http.Controller):
                     window.chatbotUserInfoMode = false;
                 }
             } else {
-                addMessage('Sorry, an error occurred. Please try again.', 'bot');
+                addMessage(T.error_msg, 'bot');
             }
         } catch (error) {
-            addMessage('Sorry, an error occurred. Please try again later.', 'bot');
+            addMessage(T.error_msg_later, 'bot');
         }
     }
 
@@ -431,7 +470,7 @@ class ChatbotController(http.Controller):
         const email    = document.getElementById('customer-email').value.trim();
         const phone    = document.getElementById('customer-phone').value.trim();
         const datetime = document.getElementById('customer-datetime').value;
-        if (!name || !email) { alert('Please enter your name and email'); return; }
+        if (!name || !email) { alert(T.validate_name_email); return; }
         try {
             const response = await fetch(CHATBOT_CONFIG.apiUrl + '/submit_info', {
                 method: 'POST',
@@ -440,12 +479,12 @@ class ChatbotController(http.Controller):
             });
             const data = await response.json();
             if (data.result.success) {
-                addMessage('Thank you! Your information has been recorded. We will contact you as soon as possible.', 'bot');
+                addMessage(T.thank_you, 'bot');
                 document.getElementById('customer-form').style.display = 'none';
                 document.querySelector('.chatbot-input-area').style.display = 'flex';
                 ['customer-name','customer-email','customer-phone','customer-datetime'].forEach(id => document.getElementById(id).value = '');
             } else {
-                alert('An error occurred. Please try again.');
+                alert(T.form_error);
             }
         } catch (error) {
             alert('An error occurred. Please try again.');
@@ -460,6 +499,7 @@ class ChatbotController(http.Controller):
     })();
         """ % (get_base_url() + '/chatbot/api', phone, zalo_link, messenger_link,
                icon_toggle, icon_chat, icon_phone, icon_zalo, icon_messenger,
+               t_json,
                bg_toggle, bg_chat, bg_phone, bg_zalo, bg_messenger)
 
         return request.make_response(
