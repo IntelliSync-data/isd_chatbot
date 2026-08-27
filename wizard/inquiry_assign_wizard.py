@@ -16,7 +16,7 @@ class InquiryAssignWizard(models.TransientModel):
         self.ensure_one()
         self.inquiry_id.assigned_user_id = self.assigned_user_id
         if self.next_action == 'save_to_crm':
-            return self.inquiry_id.action_save_to_crm()
+            self.inquiry_id.action_save_to_crm()
         elif self.next_action == 'booking':
-            return self.inquiry_id.action_booking()
+            self.inquiry_id.action_booking()
         return {'type': 'ir.actions.act_window_close'}
