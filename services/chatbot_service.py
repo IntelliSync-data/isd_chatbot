@@ -31,111 +31,88 @@ class ChatbotService:
             'external_message_id': kwargs.get('external_message_id') or False,
         }])
 
-        # First, always try to extract user information from the message
         chatbot_config = env['chatbot.config'].sudo()
 
         customer_inquiry_created = False
         conversation_ended = False
 
-        try:
-            # Extract user information from every message
-            user_info = chatbot_config.parse_user_info(message)
-            _logger.info(f"Extracted user info from message: {user_info}")
+        # Step 1: Check if message contains concrete contact info (email or phone)
+        import re
+        has_email_raw = bool(re.search(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', message))
+        has_phone_raw = bool(re.search(r'\b(\d{10}|\d{11}|\d{3}[-\s.]\d{3}[-\s.]\d{4}|\d{4}[-\s.]\d{3}[-\s.]\d{3})\b', message))
 
-            # Check if we have user information
-            has_name = user_info.get(
-                'name') and user_info.get('name').strip() != ''
-            has_email = user_info.get(
-                'email') and user_info.get('email').strip() != ''
-            has_phone = user_info.get(
-                'phone') and user_info.get('phone').strip() != ''
+        # Step 2: Only try user info extraction if message has email or phone
+        if has_email_raw or has_phone_raw:
+            try:
+                user_info = chatbot_config.parse_user_info(message)
+                _logger.info(f"Extracted user info from message: {user_info}")
 
-            # Validate: Must have name AND (email OR phone)
-            # If user provides name but missing BOTH email and phone, reject
-            if has_name and not has_email and not has_phone:
-                _logger.info(
-                    "User provided name but missing both email and phone - requesting contact info")
+                has_name = user_info.get('name') and user_info.get('name').strip() != ''
+                has_email = user_info.get('email') and user_info.get('email').strip() != ''
+                has_phone = user_info.get('phone') and user_info.get('phone').strip() != ''
 
-                # Get the configured missing contact message
-                missing_contact_msg = chatbot_config._get_missing_contact_message()
+                if has_name and not has_email and not has_phone:
+                    missing_contact_msg = chatbot_config._get_missing_contact_message()
+                    bot_missing = env['chatbot.message'].sudo().create([{
+                        'conversation_id': conversation.id,
+                        'message_type': 'bot',
+                        'content': missing_contact_msg,
+                        'response_type': 'prompt',
+                    }])
+                    return ChatResponseDTO(
+                        bot_message=bot_missing,
+                        session_id=conversation.session_id,
+                        customer_inquiry_created=False,
+                        conversation_ended=False,
+                    )
 
-                # Save bot response
-                bot_missing = env['chatbot.message'].sudo().create([{
-                    'conversation_id': conversation.id,
-                    'message_type': 'bot',
-                    'content': missing_contact_msg,
-                    'response_type': 'prompt',
-                }])
+                if has_name and (has_email or has_phone):
+                    _logger.info("Complete user information detected - ending conversation")
+                    inquiry_vals = {
+                        'message': message,
+                        'name': user_info['name'].strip(),
+                        'email': user_info['email'].strip() if has_email else False,
+                        'phone': user_info['phone'].strip() if has_phone else False,
+                        'state': 'new',
+                        'conversation_id': conversation.id,
+                        'source_id': conversation.source_id.id if conversation.source_id else False,
+                    }
 
-                return ChatResponseDTO(
-                    bot_message=bot_missing,
-                    session_id=conversation.session_id,
-                    customer_inquiry_created=False,
-                    conversation_ended=False,
-                )
+                    if user_info.get('datetime'):
+                        try:
+                            from datetime import datetime
+                            import pytz
+                            dt = datetime.fromisoformat(user_info['datetime'])
+                            tz_vietnam = pytz.timezone('Asia/Ho_Chi_Minh')
+                            dt_vietnam = tz_vietnam.localize(dt)
+                            dt_utc = dt_vietnam.astimezone(pytz.UTC)
+                            dt_naive = dt_utc.replace(tzinfo=None)
+                            inquiry_vals['consultation_datetime'] = dt_naive
+                        except Exception as e:
+                            _logger.warning(f"Failed to parse extracted datetime: {e}")
 
-            # If we have name AND at least email OR phone, save the inquiry
-            if has_name and (has_email or has_phone):
-                _logger.info(
-                    "Complete user information detected - ending conversation")
+                    inquiry = env['customer.inquiry'].sudo().create([inquiry_vals])
+                    customer_inquiry_created = True
 
-                # Create customer inquiry with complete information
-                inquiry_vals = {
-                    'message': message,  # Store original message
-                    'name': user_info['name'].strip(),
-                    'email': user_info['email'].strip() if has_email else False,
-                    'phone': user_info['phone'].strip() if has_phone else False,
-                    'state': 'new',
-                    'conversation_id': conversation.id,  # Link to conversation
-                    'source_id': conversation.source_id.id if conversation.source_id else False  # Copy source from conversation
-                }
+                    conversation.sudo().write({
+                        'customer_inquiry_id': inquiry.id,
+                        'status': 'ended',
+                        'end_time': fields.Datetime.now()
+                    })
+                    conversation_ended = True
 
-                # Handle consultation datetime if extracted
-                if user_info.get('datetime'):
-                    try:
-                        from datetime import datetime
-                        import pytz
-                        # Parse the extracted datetime string
-                        dt = datetime.fromisoformat(user_info['datetime'])
-                        # Assume Vietnam timezone for extracted datetime
-                        tz_vietnam = pytz.timezone('Asia/Ho_Chi_Minh')
-                        dt_vietnam = tz_vietnam.localize(dt)
-                        # Convert to UTC for storage
-                        dt_utc = dt_vietnam.astimezone(pytz.UTC)
-                        dt_naive = dt_utc.replace(tzinfo=None)
-                        inquiry_vals['consultation_datetime'] = dt_naive
-                        _logger.info(
-                            f"Added consultation datetime: {dt_naive}")
-                    except Exception as e:
-                        _logger.warning(
-                            f"Failed to parse extracted datetime: {e}")
+                    response = chatbot_config._get_end_message()
+                    response_type = 'none'
+                    matched_config = 'conversation_ended'
+                    similarity_score = 1.0
 
-                inquiry = env['customer.inquiry'].sudo().create(
-                    [inquiry_vals])
-                customer_inquiry_created = True
+                    _logger.info(f"Conversation ended - created customer inquiry {inquiry.id}")
 
-                # End the conversation
-                conversation.sudo().write({
-                    'customer_inquiry_id': inquiry.id,
-                    'status': 'ended',
-                    'end_time': fields.Datetime.now()
-                })
-                conversation_ended = True
+            except Exception as e:
+                _logger.error(f"Error processing user info: {str(e)}")
+                conversation_ended = False
 
-                # Get the configured end message
-                response = chatbot_config._get_end_message()
-                response_type = 'none'
-                matched_config = 'conversation_ended'
-                similarity_score = 1.0
-
-                _logger.info(
-                    f"Conversation ended - created customer inquiry {inquiry.id}")
-
-        except Exception as e:
-            _logger.error(f"Error processing user info: {str(e)}")
-            conversation_ended = False
-
-        # If we didn't end the conversation, get normal chatbot response
+        # Step 3: If no contact info found or extraction didn't end conversation, do Q&A
         if not conversation_ended:
             response, response_type, matched_config, similarity_score = chatbot_config.get_chatbot_response(
                 message)
