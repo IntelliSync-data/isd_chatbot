@@ -417,91 +417,91 @@ msgid "Source"
 msgstr "Nguồn"
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "At least email or phone number must be provided."
 msgstr "Phải cung cấp ít nhất email hoặc số điện thoại."
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "Assign User"
 msgstr "Phân công người dùng"
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "This inquiry has already been saved to CRM."
 msgstr "Yêu cầu này đã được lưu vào CRM."
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "Name and email are required to save to CRM."
 msgstr "Cần có tên và email để lưu vào CRM."
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "Set Consultation Date and Time"
 msgstr "Đặt ngày và giờ tư vấn"
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "Email is required to create a booking."
 msgstr "Cần có email để tạo lịch hẹn."
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "Please set consultation date and time before booking."
 msgstr "Vui lòng đặt ngày và giờ tư vấn trước khi đặt lịch."
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "This inquiry has already been booked."
 msgstr "Yêu cầu này đã được đặt lịch."
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "Calendar event created with videocall link and invitation emails sent!"
 msgstr "Đã tạo sự kiện lịch với liên kết video và gửi email mời!"
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "No message content to analyze!"
 msgstr "Không có nội dung tin nhắn để phân tích!"
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "Re-analyze message"
 msgstr "Phân tích lại tin nhắn"
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "OpenAI service is not available or configured"
 msgstr "Dịch vụ OpenAI không khả dụng hoặc chưa được cấu hình"
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/customer_inquiry.py
+#: code:addons/isd_chatbot/models/customer_inquiry.py:0
 #, python-format
 msgid "Email is required to send invitation"
 msgstr "Cần có email để gửi lời mời"
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/chatbot_openai_service.py
+#: code:addons/isd_chatbot/models/chatbot_openai_service.py:0
 #, python-format
 msgid "OpenAI API not enabled in configuration"
 msgstr "API OpenAI chưa được bật trong cấu hình"
 
 #. module: isd_chatbot
-#: code:addons/isd_chatbot/models/chatbot_openai_service.py
+#: code:addons/isd_chatbot/models/chatbot_openai_service.py:0
 #, python-format
 msgid "OpenAI API key not configured"
 msgstr "Chưa cấu hình khóa API OpenAI"
