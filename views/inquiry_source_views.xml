@@ -63,5 +63,6 @@
               name="Inquiry Sources"
               parent="menu_chatbot_config"
               action="action_inquiry_source"
-              sequence="30"/>
+              sequence="30"
+              groups="group_chatbot_admin"/>
 </odoo>

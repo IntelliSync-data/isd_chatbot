@@ -35,9 +35,17 @@
             <field name="implied_ids" eval="[(4, ref('group_chatbot_editor'))]"/>
         </record>
         
-        <!-- Assign Manager group to System Admin -->
+        <!-- Chatbot Admin Group -->
+        <record id="group_chatbot_admin" model="res.groups">
+            <field name="name">Chatbot Admin</field>
+            <field name="category_id" ref="base.module_category_services"/>
+            <field name="comment">Full access including advanced configuration (Survey Mappings, Inquiry API, Inquiry Sources)</field>
+            <field name="implied_ids" eval="[(4, ref('group_chatbot_manager'))]"/>
+        </record>
+
+        <!-- Assign Admin group to System Admin -->
         <record id="base.user_admin" model="res.users">
-            <field name="groups_id" eval="[(4, ref('group_chatbot_manager'))]"/>
+            <field name="groups_id" eval="[(4, ref('group_chatbot_admin'))]"/>
         </record>
 
         <!-- Record Rules: Inquiry visibility -->

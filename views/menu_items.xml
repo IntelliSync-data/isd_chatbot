@@ -14,12 +14,12 @@
               sequence="20"
               groups="group_chatbot_editor"/>
     
-    <menuitem id="menu_chatbot_global_settings" 
-              name="Global Settings" 
-              parent="menu_chatbot_config" 
-              action="action_chatbot_configuration" 
+    <menuitem id="menu_chatbot_global_settings"
+              name="Global Settings"
+              parent="menu_chatbot_config"
+              action="action_chatbot_configuration"
               sequence="5"
-              groups="group_chatbot_editor"/>
+              groups="group_chatbot_admin"/>
     
     <menuitem id="menu_chatbot_config_questions" 
               name="Q and A Configuration" 
@@ -66,7 +66,7 @@
               parent="menu_chatbot_config"
               action="action_inquiry_api_doc"
               sequence="20"
-              groups="group_chatbot_editor"/>
+              groups="group_chatbot_admin"/>
 
     <!-- Integration Menu - Manager only -->
     <menuitem id="menu_chatbot_integration"
