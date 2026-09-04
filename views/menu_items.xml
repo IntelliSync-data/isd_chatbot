@@ -44,21 +44,21 @@
               sequence="10"
               groups="group_chatbot_user"/>
     
-    <!-- Webhook Logs Menu - Manager only -->
-    <menuitem id="menu_webhook_logs" 
-              name="Webhook Logs" 
-              parent="menu_chatbot_main" 
-              action="action_webhook_log" 
+    <!-- Webhook Logs Menu - Admin only -->
+    <menuitem id="menu_webhook_logs"
+              name="Webhook Logs"
+              parent="menu_chatbot_main"
+              action="action_webhook_log"
               sequence="15"
-              groups="group_chatbot_manager"/>
-    
-    <!-- Webhook Statistics Menu - Manager only -->
-    <menuitem id="menu_webhook_stats" 
-              name="Webhook Statistics" 
-              parent="menu_chatbot_main" 
-              action="action_webhook_stats" 
+              groups="group_chatbot_admin"/>
+
+    <!-- Webhook Statistics Menu - Admin only -->
+    <menuitem id="menu_webhook_stats"
+              name="Webhook Statistics"
+              parent="menu_chatbot_main"
+              action="action_webhook_stats"
               sequence="16"
-              groups="group_chatbot_manager"/>
+              groups="group_chatbot_admin"/>
     
     <!-- API Documentation Menu - Editor and above -->
     <menuitem id="menu_inquiry_api_doc"
