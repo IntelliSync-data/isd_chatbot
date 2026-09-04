@@ -1,0 +1,1237 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* isd_chatbot
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-04 00:00+0000\n"
+"PO-Revision-Date: 2026-09-04 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Vietnamese\n"
+"Language: vi_VN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: isd_chatbot
+#: model:ir.model,name:isd_chatbot.model_chatbot_config
+msgid "Chatbot Configuration"
+msgstr "Cấu hình Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__name
+msgid "Name"
+msgstr "Tên"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__sequence
+msgid "Sequence"
+msgstr "Thứ tự"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__question_pattern
+msgid "Question Pattern"
+msgstr "Mẫu câu hỏi"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,help:isd_chatbot.field_chatbot_config__question_pattern
+msgid "Question pattern to match"
+msgstr "Mẫu câu hỏi để so khớp"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__answer
+msgid "Answer"
+msgstr "Câu trả lời"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,help:isd_chatbot.field_chatbot_config__answer
+msgid "Answer to provide when pattern matches"
+msgstr "Câu trả lời khi mẫu câu hỏi khớp"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__active
+msgid "Active"
+msgstr "Hoạt động"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__similarity_threshold
+msgid "Similarity Threshold"
+msgstr "Ngưỡng tương đồng"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,help:isd_chatbot.field_chatbot_config__similarity_threshold
+msgid "Minimum similarity score (0.0 to 1.0) to trigger this response"
+msgstr "Điểm tương đồng tối thiểu (0.0 đến 1.0) để kích hoạt phản hồi"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__default_message
+msgid "Default Message"
+msgstr "Tin nhắn mặc định"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,help:isd_chatbot.field_chatbot_config__default_message
+msgid "Message when no pattern matches"
+msgstr "Tin nhắn khi không có mẫu nào khớp"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__default_response_type
+msgid "Response type when no match"
+msgstr "Loại phản hồi khi không khớp"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_chatbot_config__default_response_type
+msgid "Show information form"
+msgstr "Hiển thị biểu mẫu thông tin"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_chatbot_config__default_response_type
+msgid "Request text input"
+msgstr "Yêu cầu nhập văn bản"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_chatbot_config__default_response_type
+msgid "No information required"
+msgstr "Không cần thông tin"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__prompt_message
+msgid "Prompt Message"
+msgstr "Tin nhắn hướng dẫn"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__end_message
+msgid "End Message"
+msgstr "Tin nhắn kết thúc"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__missing_contact_message
+msgid "Missing Contact Message"
+msgstr "Tin nhắn thiếu thông tin liên hệ"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__language_model
+msgid "Language Model"
+msgstr "Mô hình ngôn ngữ"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_chatbot_config__language_model
+msgid "English Small"
+msgstr "Tiếng Anh (Nhỏ)"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_chatbot_config__language_model
+msgid "English Medium"
+msgstr "Tiếng Anh (Trung bình)"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_chatbot_config__language_model
+msgid "Vietnamese Small"
+msgstr "Tiếng Việt (Nhỏ)"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_res_config_settings__language_model
+msgid "Vietnamese (Large)"
+msgstr "Tiếng Việt (Lớn)"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_res_config_settings__language_model
+msgid "Vietnamese (Medium)"
+msgstr "Tiếng Việt (Trung bình)"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_res_config_settings__language_model
+msgid "Vietnamese (Small)"
+msgstr "Tiếng Việt (Nhỏ)"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__openai_api_key
+msgid "OpenAI API Key"
+msgstr "Khóa API OpenAI"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__openai_model
+msgid "OpenAI Model"
+msgstr "Mô hình OpenAI"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__enable_openai
+msgid "Enable OpenAI Analysis"
+msgstr "Bật phân tích OpenAI"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__default_survey_id
+msgid "Default Survey Template"
+msgstr "Mẫu khảo sát mặc định"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__zalo_oa_app_id
+msgid "Zalo OA App ID"
+msgstr "Zalo OA App ID"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__zalo_oa_secret_key
+msgid "Zalo OA Api Secret Key"
+msgstr "Khóa bí mật Zalo OA"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__zalo_oa_api_token
+msgid "Zalo OA Api Token"
+msgstr "Token API Zalo OA"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__zalo_oa_refresh_token
+msgid "Zalo OA Api Refresh Token"
+msgstr "Token làm mới Zalo OA"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__enable_facebook
+msgid "Enable Facebook Page Inbox"
+msgstr "Bật hộp thư Facebook Page"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__facebook_page_id
+msgid "Facebook Page ID"
+msgstr "Facebook Page ID"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__facebook_page_access_token
+msgid "Facebook Page Access Token"
+msgstr "Token truy cập Facebook Page"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__facebook_app_id
+msgid "Facebook App ID"
+msgstr "Facebook App ID"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__facebook_app_secret
+msgid "Facebook App Secret"
+msgstr "Facebook App Secret"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_config__facebook_verify_phrase
+msgid "Facebook Verify Phrase"
+msgstr "Cụm từ xác minh Facebook"
+
+#. module: isd_chatbot
+#: model:ir.model,name:isd_chatbot.model_chatbot_conversation
+msgid "Chatbot Conversation History"
+msgstr "Lịch sử hội thoại Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_conversation__session_id
+msgid "Session ID"
+msgstr "Mã phiên"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_conversation__user_ip
+msgid "User IP Address"
+msgstr "Địa chỉ IP"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_conversation__user_agent
+msgid "User Agent"
+msgstr "User Agent"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_conversation__start_time
+msgid "Start Time"
+msgstr "Thời gian bắt đầu"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_conversation__end_time
+msgid "End Time"
+msgstr "Thời gian kết thúc"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_conversation__total_messages
+msgid "Total Messages"
+msgstr "Tổng tin nhắn"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_conversation__status
+msgid "Status"
+msgstr "Trạng thái"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_chatbot_conversation__status
+msgid "Ended"
+msgstr "Đã kết thúc"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_chatbot_conversation__status
+msgid "Abandoned"
+msgstr "Đã bỏ"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_conversation__source_id
+msgid "Conversation Source"
+msgstr "Nguồn hội thoại"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_conversation__message_ids
+msgid "Messages"
+msgstr "Tin nhắn"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_conversation__customer_inquiry_id
+msgid "Related Inquiry"
+msgstr "Yêu cầu liên quan"
+
+#. module: isd_chatbot
+#: model:ir.model,name:isd_chatbot.model_chatbot_message
+msgid "Chatbot Message"
+msgstr "Tin nhắn Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_chatbot_message__message_type
+msgid "User Message"
+msgstr "Tin nhắn người dùng"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_chatbot_message__message_type
+msgid "Bot Response"
+msgstr "Phản hồi Bot"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_message__message_type
+msgid "Message Type"
+msgstr "Loại tin nhắn"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_message__content
+msgid "Message Content"
+msgstr "Nội dung tin nhắn"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_message__timestamp
+msgid "Timestamp"
+msgstr "Thời gian"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_message__response_type
+msgid "Response Type"
+msgstr "Loại phản hồi"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_message__matched_config
+msgid "Matched Config"
+msgstr "Cấu hình khớp"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_chatbot_message__similarity_score
+msgid "Similarity Score"
+msgstr "Điểm tương đồng"
+
+#. module: isd_chatbot
+#: model:ir.model,name:isd_chatbot.model_customer_inquiry
+msgid "Customer Inquiry from Chatbot"
+msgstr "Yêu cầu khách hàng từ Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__email
+msgid "Email"
+msgstr "Email"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__phone
+msgid "Phone"
+msgstr "Số điện thoại"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__consultation_datetime
+msgid "Consultation Date & Time"
+msgstr "Ngày & giờ tư vấn"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__message
+msgid "Message (Raw Input)"
+msgstr "Tin nhắn (Dữ liệu gốc)"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__analyzed_message
+msgid "Analyzed Message"
+msgstr "Tin nhắn đã phân tích"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_customer_inquiry__state
+msgid "New"
+msgstr "Mới"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_customer_inquiry__state
+msgid "Saved to CRM"
+msgstr "Đã lưu vào CRM"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_customer_inquiry__state
+msgid "Booked"
+msgstr "Đã đặt lịch"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__crm_lead_id
+msgid "CRM Lead"
+msgstr "Cơ hội CRM"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__calendar_event_id
+msgid "Calendar Event"
+msgstr "Sự kiện lịch"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__assigned_user_id
+msgid "Assigned User"
+msgstr "Người phụ trách"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__survey_user_input_id
+msgid "Survey Response"
+msgstr "Phản hồi khảo sát"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__student_id
+msgid "Student"
+msgstr "Học viên"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__analyzed
+msgid "Analyzed"
+msgstr "Đã phân tích"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__analysis_date
+msgid "Analysis Date"
+msgstr "Ngày phân tích"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__analysis_log
+msgid "Analysis Log"
+msgstr "Nhật ký phân tích"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__source_id
+msgid "Source"
+msgstr "Nguồn"
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "At least email or phone number must be provided."
+msgstr "Phải cung cấp ít nhất email hoặc số điện thoại."
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "Assign User"
+msgstr "Phân công người dùng"
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "This inquiry has already been saved to CRM."
+msgstr "Yêu cầu này đã được lưu vào CRM."
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "Name and email are required to save to CRM."
+msgstr "Cần có tên và email để lưu vào CRM."
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "Set Consultation Date and Time"
+msgstr "Đặt ngày và giờ tư vấn"
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "Email is required to create a booking."
+msgstr "Cần có email để tạo lịch hẹn."
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "Please set consultation date and time before booking."
+msgstr "Vui lòng đặt ngày và giờ tư vấn trước khi đặt lịch."
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "This inquiry has already been booked."
+msgstr "Yêu cầu này đã được đặt lịch."
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "Calendar event created with videocall link and invitation emails sent!"
+msgstr "Đã tạo sự kiện lịch với liên kết video và gửi email mời!"
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "No message content to analyze!"
+msgstr "Không có nội dung tin nhắn để phân tích!"
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "Re-analyze message"
+msgstr "Phân tích lại tin nhắn"
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "OpenAI service is not available or configured"
+msgstr "Dịch vụ OpenAI không khả dụng hoặc chưa được cấu hình"
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/customer_inquiry.py
+#, python-format
+msgid "Email is required to send invitation"
+msgstr "Cần có email để gửi lời mời"
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/chatbot_openai_service.py
+#, python-format
+msgid "OpenAI API not enabled in configuration"
+msgstr "API OpenAI chưa được bật trong cấu hình"
+
+#. module: isd_chatbot
+#: code:addons/isd_chatbot/models/chatbot_openai_service.py
+#, python-format
+msgid "OpenAI API key not configured"
+msgstr "Chưa cấu hình khóa API OpenAI"
+
+#. module: isd_chatbot
+#: model:ir.model,name:isd_chatbot.model_inquiry_source
+msgid "Customer Inquiry Source"
+msgstr "Nguồn yêu cầu khách hàng"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_inquiry_source__name
+msgid "Source Name"
+msgstr "Tên nguồn"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_inquiry_source__code
+msgid "Source Code"
+msgstr "Mã nguồn"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_inquiry_source__code
+msgid "Chatbot"
+msgstr "Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_inquiry_source__code
+msgid "Manual Entry"
+msgstr "Nhập thủ công"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_inquiry_source__code
+msgid "Zalo"
+msgstr "Zalo"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_inquiry_source__code
+msgid "Facebook"
+msgstr "Facebook"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_inquiry_source__code
+msgid "Website"
+msgstr "Website"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_inquiry_source__code
+msgid "Phone Call"
+msgstr "Cuộc gọi"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_inquiry_source__code
+msgid "Other"
+msgstr "Khác"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_inquiry_source__description
+msgid "Description"
+msgstr "Mô tả"
+
+#. module: isd_chatbot
+#: model_terms:ir.model.constraint,message:isd_chatbot.constraint_inquiry_source_code_unique
+msgid "Source code must be unique!"
+msgstr "Mã nguồn phải là duy nhất!"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__phone
+msgid "Phone Number"
+msgstr "Số điện thoại"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__zalo_link
+msgid "Zalo Link"
+msgstr "Liên kết Zalo"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__messenger_link
+msgid "Messenger Link"
+msgstr "Liên kết Messenger"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__cors_origins
+msgid "Allowed Origins"
+msgstr "Nguồn được phép"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__icon_toggle
+msgid "Toggle Icon"
+msgstr "Biểu tượng nút bấm"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__icon_chat
+msgid "Chat Icon"
+msgstr "Biểu tượng chat"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__icon_phone
+msgid "Phone Icon"
+msgstr "Biểu tượng điện thoại"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__icon_zalo
+msgid "Zalo Icon"
+msgstr "Biểu tượng Zalo"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__icon_messenger
+msgid "Messenger Icon"
+msgstr "Biểu tượng Messenger"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__hide_analyze
+msgid "Hide Analyze Button"
+msgstr "Ẩn nút Phân tích"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__hide_save_to_crm
+msgid "Hide Save to CRM Button"
+msgstr "Ẩn nút Lưu vào CRM"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__hide_invite_user
+msgid "Hide Invite User Button"
+msgstr "Ẩn nút Mời người dùng"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__bg_toggle
+msgid "Toggle Background Color"
+msgstr "Màu nền nút bấm"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__bg_chat
+msgid "Chat Background Color"
+msgstr "Màu nền nút chat"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__bg_phone
+msgid "Phone Background Color"
+msgstr "Màu nền nút điện thoại"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__bg_zalo
+msgid "Zalo Background Color"
+msgstr "Màu nền nút Zalo"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_config_settings__bg_messenger
+msgid "Messenger Background Color"
+msgstr "Màu nền nút Messenger"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_users__is_chatbot_agent
+msgid "Chatbot Agent"
+msgstr "Nhân viên Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_res_users__chatbot_inquiry_count
+msgid "Chatbot Inquiries"
+msgstr "Yêu cầu Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.model,name:isd_chatbot.model_webhook_log
+msgid "Chatbot Webhook Log"
+msgstr "Nhật ký Webhook Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__webhook_id
+msgid "Webhook ID"
+msgstr "Mã Webhook"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__request_body
+msgid "Request Body"
+msgstr "Nội dung yêu cầu"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__formatted_json
+msgid "Formatted JSON"
+msgstr "JSON đã định dạng"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__source_ip
+msgid "Source IP"
+msgstr "IP nguồn"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__http_method
+msgid "HTTP Method"
+msgstr "Phương thức HTTP"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__query_params
+msgid "Query Parameters"
+msgstr "Tham số truy vấn"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__request_headers
+msgid "Request Headers"
+msgstr "Header yêu cầu"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__full_url
+msgid "Full URL"
+msgstr "URL đầy đủ"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__webhook_type
+msgid "Webhook Type"
+msgstr "Loại Webhook"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__event_type
+msgid "Event Type"
+msgstr "Loại sự kiện"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__merchant
+msgid "Merchant"
+msgstr "Đối tác"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_webhook_log__status
+msgid "Received"
+msgstr "Đã nhận"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_webhook_log__status
+msgid "Processed"
+msgstr "Đã xử lý"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_webhook_log__status
+msgid "Error"
+msgstr "Lỗi"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,selection:isd_chatbot.field_webhook_log__status
+msgid "Ignored"
+msgstr "Đã bỏ qua"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__processing_notes
+msgid "Processing Notes"
+msgstr "Ghi chú xử lý"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__error_message
+msgid "Error Message"
+msgstr "Thông báo lỗi"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__received_at
+msgid "Received At"
+msgstr "Nhận lúc"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_webhook_log__processed_at
+msgid "Processed At"
+msgstr "Xử lý lúc"
+
+#. module: isd_chatbot
+#: model:ir.model,name:isd_chatbot.model_survey_question_mapping
+msgid "Survey Question Mapping for Customer Inquiry"
+msgstr "Ánh xạ câu hỏi khảo sát cho yêu cầu khách hàng"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_survey_question_mapping__survey_id
+msgid "Survey"
+msgstr "Khảo sát"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_survey_question_mapping__question_id
+msgid "Survey Question"
+msgstr "Câu hỏi khảo sát"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_survey_question_mapping__inquiry_field
+msgid "Inquiry Field"
+msgstr "Trường yêu cầu"
+
+#. module: isd_chatbot
+#: model:ir.model,name:isd_chatbot.model_inquiry_assign_wizard
+msgid "Assign User to Inquiry"
+msgstr "Phân công người dùng cho yêu cầu"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_inquiry_assign_wizard__assigned_user_id
+msgid "Assign To"
+msgstr "Phân công cho"
+
+#. module: isd_chatbot
+#: model:ir.model,name:isd_chatbot.model_customer_inquiry_analyze_confirm
+msgid "Confirm Analysis of Customer Inquiry Message"
+msgstr "Xác nhận phân tích tin nhắn yêu cầu khách hàng"
+
+#. module: isd_chatbot
+#: model:res.groups,name:isd_chatbot.group_chatbot_guest
+msgid "Chatbot Guest"
+msgstr "Chatbot Khách"
+
+#. module: isd_chatbot
+#: model:res.groups,name:isd_chatbot.group_chatbot_user
+msgid "Chatbot User"
+msgstr "Chatbot Người dùng"
+
+#. module: isd_chatbot
+#: model:res.groups,name:isd_chatbot.group_chatbot_editor
+msgid "Chatbot Editor"
+msgstr "Chatbot Biên tập"
+
+#. module: isd_chatbot
+#: model:res.groups,name:isd_chatbot.group_chatbot_manager
+msgid "Chatbot Manager"
+msgstr "Chatbot Quản lý"
+
+#. module: isd_chatbot
+#: model:res.groups,name:isd_chatbot.group_chatbot_admin
+msgid "Chatbot Admin"
+msgstr "Chatbot Quản trị"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_list
+msgid "Customer Inquiries"
+msgstr "Yêu cầu khách hàng"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Customer Inquiry"
+msgstr "Yêu cầu khách hàng"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Analyze"
+msgstr "Phân tích"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Save to CRM"
+msgstr "Lưu vào CRM"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Add Datetime"
+msgstr "Thêm ngày giờ"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Booking"
+msgstr "Đặt lịch"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Invite User"
+msgstr "Mời người dùng"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Resend Invite"
+msgstr "Gửi lại lời mời"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Customer Name"
+msgstr "Tên khách hàng"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "CRM Lead Created"
+msgstr "Đã tạo cơ hội CRM"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Meeting Scheduled"
+msgstr "Đã đặt lịch họp"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Message"
+msgstr "Tin nhắn"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Customer Information"
+msgstr "Thông tin khách hàng"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Contact Information"
+msgstr "Thông tin liên hệ"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "System"
+msgstr "Hệ thống"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Survey & Student Integration"
+msgstr "Tích hợp khảo sát & học viên"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Analysis Results"
+msgstr "Kết quả phân tích"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Conversation Details"
+msgstr "Chi tiết hội thoại"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Conversation Information"
+msgstr "Thông tin hội thoại"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_form
+msgid "Related Records"
+msgstr "Bản ghi liên quan"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_search
+msgid "My Inquiries"
+msgstr "Yêu cầu của tôi"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_search
+msgid "Not Analyzed"
+msgstr "Chưa phân tích"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_search
+msgid "Today"
+msgstr "Hôm nay"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_search
+msgid "This Week"
+msgstr "Tuần này"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_search
+msgid "Group By"
+msgstr "Nhóm theo"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_search
+msgid "Creation Date"
+msgstr "Ngày tạo"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_conversation_list
+msgid "Chatbot Conversations"
+msgstr "Hội thoại Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_conversation_form
+msgid "Chatbot Conversation"
+msgstr "Hội thoại Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_conversation_form
+msgid "Conversation Info"
+msgstr "Thông tin hội thoại"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_conversation_form
+msgid "User Info"
+msgstr "Thông tin người dùng"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_config_list
+msgid "Chatbot Q and A Configuration"
+msgstr "Cấu hình hỏi đáp Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_config_form
+msgid "Question and Answer"
+msgstr "Hỏi và đáp"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_config_settings_form
+msgid "Response Settings"
+msgstr "Cài đặt phản hồi"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_config_settings_form
+msgid "OpenAI API Settings"
+msgstr "Cài đặt API OpenAI"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_config_settings_form
+msgid "NLP Settings"
+msgstr "Cài đặt NLP"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_config_settings_form
+msgid "Partner Settings"
+msgstr "Cài đặt đối tác"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_config_settings_form
+msgid "Survey Integration"
+msgstr "Tích hợp khảo sát"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_config_settings_form
+msgid "Save"
+msgstr "Lưu"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_chatbot_config_settings_form
+msgid "Cancel"
+msgstr "Hủy"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_list
+msgid "Webhook Logs"
+msgstr "Nhật ký Webhook"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_form
+msgid "Webhook Log"
+msgstr "Nhật ký Webhook"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_form
+msgid "Mark as Processed"
+msgstr "Đánh dấu đã xử lý"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_form
+msgid "Mark as Error"
+msgstr "Đánh dấu lỗi"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_form
+msgid "Reset for Reprocessing"
+msgstr "Đặt lại để xử lý lại"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_form
+msgid "Request Information"
+msgstr "Thông tin yêu cầu"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_form
+msgid "Timestamps"
+msgstr "Thời gian"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_form
+msgid "Raw Body"
+msgstr "Dữ liệu gốc"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_form
+msgid "Headers"
+msgstr "Header"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_form
+msgid "Processing"
+msgstr "Xử lý"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_webhook_log_search
+msgid "This Month"
+msgstr "Tháng này"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_inquiry_source_list
+msgid "Inquiry Sources"
+msgstr "Nguồn yêu cầu"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_inquiry_source_form
+msgid "Inquiry Source"
+msgstr "Nguồn yêu cầu"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_inquiry_source_form
+msgid "Archived"
+msgstr "Đã lưu trữ"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_survey_mapping_list
+msgid "Survey Field Mappings"
+msgstr "Ánh xạ trường khảo sát"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_survey_mapping_form
+msgid "Survey Field Mapping"
+msgstr "Ánh xạ trường khảo sát"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_survey_mapping_form
+msgid "Mapping Info"
+msgstr "Thông tin ánh xạ"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_analyze_confirm_form
+msgid "Confirm Re-analysis"
+msgstr "Xác nhận phân tích lại"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_customer_inquiry_analyze_confirm_form
+msgid "Re-analyze"
+msgstr "Phân tích lại"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_inquiry_assign_wizard_form
+msgid "Confirm"
+msgstr "Xác nhận"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_inquiry_api_doc_form
+msgid "Inquiry API Documentation"
+msgstr "Tài liệu API yêu cầu"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.view_inquiry_api_doc_form
+msgid "Close"
+msgstr "Đóng"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_chatbot_main
+msgid "Chatbot"
+msgstr "Chatbot"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_chatbot_config
+msgid "Configuration"
+msgstr "Cấu hình"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_chatbot_global_settings
+msgid "Global Settings"
+msgstr "Cài đặt chung"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_chatbot_config_questions
+msgid "Q and A Configuration"
+msgstr "Cấu hình hỏi đáp"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_customer_inquiries
+msgid "Customer Inquiries"
+msgstr "Yêu cầu khách hàng"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_chatbot_conversation
+msgid "Conversations"
+msgstr "Hội thoại"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_webhook_logs
+msgid "Webhook Logs"
+msgstr "Nhật ký Webhook"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_webhook_stats
+msgid "Webhook Statistics"
+msgstr "Thống kê Webhook"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_inquiry_api_doc
+msgid "Inquiry API"
+msgstr "API yêu cầu"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_chatbot_integration
+msgid "Integration"
+msgstr "Tích hợp"
+
+#. module: isd_chatbot
+#: model:ir.ui.menu,name:isd_chatbot.menu_survey_question_mapping
+msgid "Survey Mappings"
+msgstr "Ánh xạ khảo sát"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.res_config_settings_view_form
+msgid "Embedded Widget (CORS)"
+msgstr "Widget nhúng (CORS)"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.res_config_settings_view_form
+msgid "Widget Contact Buttons"
+msgstr "Nút liên hệ Widget"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.res_config_settings_view_form
+msgid "General"
+msgstr "Chung"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.res_config_settings_view_form
+msgid "Partner Integration Settings"
+msgstr "Cài đặt tích hợp đối tác"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.res_config_settings_view_form
+msgid "Inquiry Buttons"
+msgstr "Nút yêu cầu"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.res_config_settings_view_form
+msgid "Settings"
+msgstr "Cài đặt"
+
+#. module: isd_chatbot
+#: model:ir.ui.view,arch_db:isd_chatbot.res_config_settings_view_form
+msgid "Facebook Receive Address"
+msgstr "Địa chỉ nhận Facebook"
+
+#. module: isd_chatbot
+#: model:ir.actions.act_window,name:isd_chatbot.action_chatbot_conversation
+msgid "Conversations"
+msgstr "Hội thoại"
+
+#. module: isd_chatbot
+#: model:ir.actions.act_window,name:isd_chatbot.action_webhook_log
+msgid "Webhook Logs"
+msgstr "Nhật ký Webhook"
+
+#. module: isd_chatbot
+#: model:ir.actions.act_window,name:isd_chatbot.action_webhook_stats
+msgid "Webhook Statistics"
+msgstr "Thống kê Webhook"
+
+#. module: isd_chatbot
+#: model:ir.cron,name:isd_chatbot.cron_cleanup_webhook_logs
+msgid "Chatbot: Cleanup Old Webhook Logs"
+msgstr "Chatbot: Dọn dẹp nhật ký Webhook cũ"
