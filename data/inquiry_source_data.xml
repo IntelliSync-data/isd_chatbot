@@ -22,5 +22,12 @@
             <field name="sequence">3</field>
             <field name="description">Inquiries from Zalo conversations</field>
         </record>
+
+        <record id="inquiry_source_facebook" model="inquiry.source">
+            <field name="name">Facebook</field>
+            <field name="code">facebook</field>
+            <field name="sequence">4</field>
+            <field name="description">Inquiries from Facebook Page conversations</field>
+        </record>
     </data>
 </odoo>

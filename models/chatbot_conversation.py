@@ -59,7 +59,13 @@ class ChatbotMessage(models.Model):
     response_type = fields.Char('Response Type', help='Type of bot response (form, none, etc.)')
     matched_config = fields.Char('Matched Config', help='Name of the config that matched this message')
     similarity_score = fields.Float('Similarity Score', help='Similarity score for matched pattern')
-    
+    external_message_id = fields.Char(
+        'External Message ID',
+        index=True,
+        copy=False,
+        help='Channel-native message id (e.g. Facebook mid) used to ignore redeliveries',
+    )
+
     message_preview = fields.Char('Preview', compute='_compute_message_preview', store=True)
     
     @api.depends('content', 'message_type')

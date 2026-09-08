@@ -22,7 +22,6 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
-        'data/default_data.xml',
         'data/inquiry_source_data.xml',
         'data/webhook_cron.xml',
         'views/a_res_config_settings_views.xml',

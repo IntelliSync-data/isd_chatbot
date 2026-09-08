@@ -203,6 +203,43 @@
                                     <field name="zalo_oa_api_refresh_token"/>
                                 </div>
                             </div>
+
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="facebook_enabled" class="fw-bold" style="font-size: 15px; display: block;">Enable Facebook Page Inbox</label>
+                                    <field name="facebook_enabled"/>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="facebook_page_id" class="fw-bold" style="font-size: 15px; display: block;">Facebook Page ID</label>
+                                    <field name="facebook_page_id"/>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="facebook_page_access_token" class="fw-bold" style="font-size: 15px; display: block;">Facebook Page Access Token</label>
+                                    <field name="facebook_page_access_token" password="True"/>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="facebook_app_id" class="fw-bold" style="font-size: 15px; display: block;">Facebook App ID</label>
+                                    <field name="facebook_app_id"/>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="facebook_app_secret" class="fw-bold" style="font-size: 15px; display: block;">Facebook App Secret</label>
+                                    <field name="facebook_app_secret" password="True"/>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-4">
+                                <div>
+                                    <label for="facebook_verify_token" class="fw-bold" style="font-size: 15px; display: block;">Facebook Verify Phrase</label>
+                                    <field name="facebook_verify_token" password="True"/>
+                                </div>
+                            </div>
                         </div>
 
                         <h2 style="margin-top: 20px;">Survey Integration</h2>

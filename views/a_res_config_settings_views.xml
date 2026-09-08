@@ -238,6 +238,51 @@
                                 </div>
                             </div>
                         </setting>
+                        <setting string="Enable Facebook Page Inbox" help="Receive and reply to Facebook Page messages">
+                            <field name="chatbot_facebook_enabled"/>
+                        </setting>
+                        <setting string="Facebook Receive Address" help="Paste this URL into the Meta App webhook callback" invisible="chatbot_facebook_enabled == False">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_facebook_webhook_url" readonly="1" class="w-100"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Facebook Page ID" help="Optional Page ID; events for other Pages are ignored" invisible="chatbot_facebook_enabled == False">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_facebook_page_id"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Facebook Page Access Token" help="Page access token for sending Messenger replies" invisible="chatbot_facebook_enabled == False">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_facebook_page_access_token" password="True"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Facebook App ID" help="Meta App ID used to refresh an expired Page token" invisible="chatbot_facebook_enabled == False">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_facebook_app_id"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Facebook App Secret" help="Meta App secret for webhook signatures and token exchange" invisible="chatbot_facebook_enabled == False">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_facebook_app_secret" password="True"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Facebook Verify Phrase" help="Phrase Meta sends on the webhook subscription check" invisible="chatbot_facebook_enabled == False">
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <field name="chatbot_facebook_verify_token" password="True"/>
+                                </div>
+                            </div>
+                        </setting>
                     </block>
                 </app>
             </xpath>

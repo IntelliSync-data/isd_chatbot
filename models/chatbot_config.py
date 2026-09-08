@@ -81,6 +81,32 @@ class ChatbotConfig(models.Model):
                                 help="API Refresh Token for Zalo OA integration",
                                 config_parameter='isd_chatbot.zalo_oa_api_refresh_token')
 
+    facebook_enabled = fields.Boolean(
+        'Enable Facebook Page Inbox',
+        default=False,
+        help='Receive and reply to Facebook Page messages',
+        config_parameter='isd_chatbot.facebook_enabled')
+    facebook_page_id = fields.Char(
+        'Facebook Page ID',
+        help='Optional Page ID; events for other Pages are ignored',
+        config_parameter='isd_chatbot.facebook_page_id')
+    facebook_page_access_token = fields.Char(
+        'Facebook Page Access Token',
+        help='Page access token for sending Messenger replies',
+        config_parameter='isd_chatbot.facebook_page_access_token')
+    facebook_app_id = fields.Char(
+        'Facebook App ID',
+        help='Meta App ID used to refresh an expired Page token',
+        config_parameter='isd_chatbot.facebook_app_id')
+    facebook_app_secret = fields.Char(
+        'Facebook App Secret',
+        help='Meta App secret for webhook signatures and token exchange',
+        config_parameter='isd_chatbot.facebook_app_secret')
+    facebook_verify_token = fields.Char(
+        'Facebook Verify Phrase',
+        help='Phrase Meta sends on the webhook subscription check',
+        config_parameter='isd_chatbot.facebook_verify_token')
+
     # Survey Integration
     survey_id = fields.Many2one('survey.survey', string='Default Survey Template',
                                help='Survey template to use when inviting users from inquiries')
@@ -299,7 +325,52 @@ class ChatbotConfig(models.Model):
             return config.zalo_oa_app_id
 
         return ""
-        
+
+    def _facebook_param(self, key, fallback_field):
+        IrConfigParam = self.env['ir.config_parameter'].sudo()
+        value = IrConfigParam.get_param(key)
+        if value not in (None, False, ''):
+            return value
+        default_config = self.search([('name', '=', 'Default Settings')], limit=1)
+        if default_config and default_config[fallback_field]:
+            return default_config[fallback_field]
+        config = self.search([('active', '=', True)], limit=1)
+        if config and config[fallback_field]:
+            return config[fallback_field]
+        return ""
+
+    def _is_facebook_enabled(self):
+        raw = self.env['ir.config_parameter'].sudo().get_param(
+            'isd_chatbot.facebook_enabled', default=False)
+        return raw == 'True' if isinstance(raw, str) else bool(raw)
+
+    def _get_facebook_page_id(self):
+        return self._facebook_param('isd_chatbot.facebook_page_id', 'facebook_page_id') or ''
+
+    def _get_facebook_page_access_token(self):
+        return self._facebook_param(
+            'isd_chatbot.facebook_page_access_token', 'facebook_page_access_token') or ''
+
+    def _get_facebook_app_id(self):
+        return self._facebook_param('isd_chatbot.facebook_app_id', 'facebook_app_id') or ''
+
+    def _get_facebook_app_secret(self):
+        return self._facebook_param(
+            'isd_chatbot.facebook_app_secret', 'facebook_app_secret') or ''
+
+    def _get_facebook_verify_token(self):
+        return self._facebook_param(
+            'isd_chatbot.facebook_verify_token', 'facebook_verify_token') or ''
+
+    def _set_facebook_page_access_token(self, token):
+        self.env['ir.config_parameter'].sudo().set_param(
+            'isd_chatbot.facebook_page_access_token', token or '')
+        _logger.info("Facebook Page access token updated in configuration")
+
+    def _is_facebook_configured(self):
+        return bool(
+            self._get_facebook_page_access_token() and self._get_facebook_app_secret())
+
     def _get_response_type(self):
         """Get response type when no match found"""
         # Read from ir.config_parameter global settings
@@ -446,7 +517,13 @@ class ChatbotConfig(models.Model):
         zalo_oa_api_secret_key = ICPSudo.get_param('isd_chatbot.zalo_oa_api_secret_key', default='')
         zalo_oa_api_token = ICPSudo.get_param('isd_chatbot.zalo_oa_api_token', default='')
         zalo_oa_api_refresh_token = ICPSudo.get_param('isd_chatbot.zalo_oa_api_refresh_token', default='')
-        
+        facebook_enabled = ICPSudo.get_param('isd_chatbot.facebook_enabled', default=False)
+        facebook_page_id = ICPSudo.get_param('isd_chatbot.facebook_page_id', default='')
+        facebook_page_access_token = ICPSudo.get_param('isd_chatbot.facebook_page_access_token', default='')
+        facebook_app_id = ICPSudo.get_param('isd_chatbot.facebook_app_id', default='')
+        facebook_app_secret = ICPSudo.get_param('isd_chatbot.facebook_app_secret', default='')
+        facebook_verify_token = ICPSudo.get_param('isd_chatbot.facebook_verify_token', default='')
+
         # Update the settings record
         settings.write({
             'openai_enabled': openai_enabled == 'True' if isinstance(openai_enabled, str) else bool(openai_enabled),
@@ -456,6 +533,12 @@ class ChatbotConfig(models.Model):
             'zalo_oa_api_token': zalo_oa_api_token,
             'zalo_oa_api_refresh_token': zalo_oa_api_refresh_token,
             'zalo_oa_api_secret_key': zalo_oa_api_secret_key,
+            'facebook_enabled': facebook_enabled == 'True' if isinstance(facebook_enabled, str) else bool(facebook_enabled),
+            'facebook_page_id': facebook_page_id,
+            'facebook_page_access_token': facebook_page_access_token,
+            'facebook_app_id': facebook_app_id,
+            'facebook_app_secret': facebook_app_secret,
+            'facebook_verify_token': facebook_verify_token,
         })
         
         _logger.info(f"Synchronized OpenAI settings: enabled={openai_enabled}, model={openai_model}")

@@ -72,6 +72,7 @@
         name="Survey Mappings"
         parent="menu_chatbot_config"
         action="action_survey_question_mapping"
-        sequence="15"/>
+        sequence="15"
+        groups="group_chatbot_admin"/>
 
 </odoo>

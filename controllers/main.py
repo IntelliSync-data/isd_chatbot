@@ -2,10 +2,11 @@
 
 import json
 import logging
+import hmac
+import hashlib
 from ..services.chatbot_service import ChatbotService, ChatbotServiceFactory
 from odoo import http, fields
 from odoo.http import request
-from concurrent.futures import ThreadPoolExecutor
 import time
 
 _logger = logging.getLogger(__name__)
@@ -76,6 +77,43 @@ class ChatbotController(http.Controller):
         bg_zalo = ICPSudo.get_param('isd_chatbot.bg_zalo', default='') or '#3d6b8c'
         bg_messenger = ICPSudo.get_param('isd_chatbot.bg_messenger', default='') or '#3d6b8c'
 
+        lang = kwargs.get('lang', 'vi')
+        translations = {
+            'vi': {
+                'header_title': 'Hỗ trợ trực tuyến',
+                'greeting': 'Xin chào! Tôi có thể giúp gì cho bạn?',
+                'input_placeholder': 'Nhập tin nhắn...',
+                'send': 'Gửi',
+                'form_heading': 'Vui lòng để lại thông tin để được tư vấn',
+                'name_placeholder': 'Họ và tên *',
+                'email_placeholder': 'Email *',
+                'phone_placeholder': 'Số điện thoại',
+                'submit': 'Gửi',
+                'error_msg': 'Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại.',
+                'error_msg_later': 'Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại sau.',
+                'validate_name_email': 'Vui lòng nhập họ tên và email',
+                'thank_you': 'Cảm ơn bạn! Thông tin của bạn đã được ghi nhận. Chúng tôi sẽ liên hệ với bạn sớm nhất.',
+                'form_error': 'Đã xảy ra lỗi. Vui lòng thử lại.',
+            },
+            'en': {
+                'header_title': 'Live Support',
+                'greeting': 'Hello! How can I help you?',
+                'input_placeholder': 'Type a message...',
+                'send': 'Send',
+                'form_heading': 'Please leave your information for consultation',
+                'name_placeholder': 'Full name *',
+                'email_placeholder': 'Email *',
+                'phone_placeholder': 'Phone number',
+                'submit': 'Submit',
+                'error_msg': 'Sorry, an error occurred. Please try again.',
+                'error_msg_later': 'Sorry, an error occurred. Please try again later.',
+                'validate_name_email': 'Please enter your name and email',
+                'thank_you': 'Thank you! Your information has been recorded. We will contact you as soon as possible.',
+                'form_error': 'An error occurred. Please try again.',
+            },
+        }
+        t_json = json.dumps(translations.get(lang, translations['vi']), ensure_ascii=False)
+
         js_content = """
 (function() {
     'use strict';
@@ -94,6 +132,8 @@ class ChatbotController(http.Controller):
             messenger: '%s',
         },
     };
+
+    const T = %s;
 
     // ── Icons ──────────────────────────────────────────────────────────────────
     const FALLBACK_ICONS = {
@@ -147,25 +187,25 @@ class ChatbotController(http.Controller):
             </button>
             <div id="chatbot-window" class="chatbot-window" style="display:none;">
                 <div class="chatbot-header">
-                    <h3>Live Support</h3>
+                    <h3>${T.header_title}</h3>
                     <button id="chatbot-close" class="chatbot-close">${FALLBACK_ICONS.close}</button>
                 </div>
                 <div id="chatbot-messages" class="chatbot-messages">
                     <div class="message bot-message">
-                        <div class="message-content">Hello! How can I help you?</div>
+                        <div class="message-content">${T.greeting}</div>
                     </div>
                 </div>
                 <div class="chatbot-input-area">
-                    <input type="text" id="chatbot-input" placeholder="Type a message..." />
-                    <button id="chatbot-send">Send</button>
+                    <input type="text" id="chatbot-input" placeholder="${T.input_placeholder}" />
+                    <button id="chatbot-send">${T.send}</button>
                 </div>
                 <div id="customer-form" class="customer-form" style="display:none;">
-                    <h4>Please leave your information for consultation</h4>
-                    <input type="text" id="customer-name" placeholder="Full name *" required />
-                    <input type="email" id="customer-email" placeholder="Email *" required />
-                    <input type="tel" id="customer-phone" placeholder="Phone number" />
+                    <h4>${T.form_heading}</h4>
+                    <input type="text" id="customer-name" placeholder="${T.name_placeholder}" required />
+                    <input type="email" id="customer-email" placeholder="${T.email_placeholder}" required />
+                    <input type="tel" id="customer-phone" placeholder="${T.phone_placeholder}" />
                     <input type="datetime-local" id="customer-datetime" />
-                    <button id="submit-info">Submit</button>
+                    <button id="submit-info">${T.submit}</button>
                 </div>
             </div>
         </div>`;
@@ -404,10 +444,10 @@ class ChatbotController(http.Controller):
                     window.chatbotUserInfoMode = false;
                 }
             } else {
-                addMessage('Sorry, an error occurred. Please try again.', 'bot');
+                addMessage(T.error_msg, 'bot');
             }
         } catch (error) {
-            addMessage('Sorry, an error occurred. Please try again later.', 'bot');
+            addMessage(T.error_msg_later, 'bot');
         }
     }
 
@@ -430,7 +470,7 @@ class ChatbotController(http.Controller):
         const email    = document.getElementById('customer-email').value.trim();
         const phone    = document.getElementById('customer-phone').value.trim();
         const datetime = document.getElementById('customer-datetime').value;
-        if (!name || !email) { alert('Please enter your name and email'); return; }
+        if (!name || !email) { alert(T.validate_name_email); return; }
         try {
             const response = await fetch(CHATBOT_CONFIG.apiUrl + '/submit_info', {
                 method: 'POST',
@@ -439,12 +479,12 @@ class ChatbotController(http.Controller):
             });
             const data = await response.json();
             if (data.result.success) {
-                addMessage('Thank you! Your information has been recorded. We will contact you as soon as possible.', 'bot');
+                addMessage(T.thank_you, 'bot');
                 document.getElementById('customer-form').style.display = 'none';
                 document.querySelector('.chatbot-input-area').style.display = 'flex';
                 ['customer-name','customer-email','customer-phone','customer-datetime'].forEach(id => document.getElementById(id).value = '');
             } else {
-                alert('An error occurred. Please try again.');
+                alert(T.form_error);
             }
         } catch (error) {
             alert('An error occurred. Please try again.');
@@ -459,6 +499,7 @@ class ChatbotController(http.Controller):
     })();
         """ % (get_base_url() + '/chatbot/api', phone, zalo_link, messenger_link,
                icon_toggle, icon_chat, icon_phone, icon_zalo, icon_messenger,
+               t_json,
                bg_toggle, bg_chat, bg_phone, bg_zalo, bg_messenger)
 
         return request.make_response(
@@ -690,74 +731,60 @@ class ChatbotController(http.Controller):
 
     @http.route('/isd_chatbot/webhook', type='http', auth='public', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], csrf=False)
     def webhook_receiver(self, **kwargs):
-        """
-        Universal webhook endpoint to receive any HTTP method and store all request data
-        Responds with HTTP 200 OK status
-        """
+        """Shared inbound address. Split Zalo vs Facebook with query merchant= only."""
+        cors = [
+            ('Access-Control-Allow-Origin', '*'),
+            ('Access-Control-Allow-Methods',
+             'GET, POST, PUT, DELETE, PATCH, OPTIONS'),
+            ('Access-Control-Allow-Headers', 'Content-Type, Authorization'),
+        ]
         try:
-            # Get HTTP method
             http_method = request.httprequest.method
-
-            # Get request body data - always try to get body for all methods
+            raw_bytes = b''
             request_body = ''
             try:
-                # Always attempt to read request body regardless of method
-                raw_data = request.httprequest.get_data(as_text=True)
-                if raw_data:
-                    request_body = raw_data
+                raw_bytes = request.httprequest.get_data() or b''
+                if raw_bytes:
+                    request_body = raw_bytes.decode('utf-8', errors='replace')
                 elif http_method == 'GET' and request.httprequest.args:
-                    # Only fall back to query params for GET if no body
                     request_body = json.dumps(dict(request.httprequest.args))
             except Exception as e:
-                _logger.warning(f"Failed to read request body: {e}")
-                request_body = ''
+                _logger.warning("Failed to read request body: %s", e)
 
-            # Get query parameters - always separate from body
-            query_params = ''
-            if request.httprequest.args:
-                query_params = dict(request.httprequest.args)
+            query_params = dict(request.httprequest.args) if request.httprequest.args else {}
+            merchant = (query_params.get('merchant') or '').strip().lower()
 
-            # Get all request headers (excluding sensitive ones)
             headers_dict = {}
+            signature_header = ''
             for header_name, header_value in request.httprequest.headers:
-                # Skip sensitive headers
-                if header_name.lower() not in ['authorization', 'cookie', 'set-cookie']:
-                    headers_dict[header_name] = header_value
+                if header_name.lower() in ['authorization', 'cookie', 'set-cookie']:
+                    continue
+                headers_dict[header_name] = header_value
+                if header_name.lower() == 'x-hub-signature-256':
+                    signature_header = header_value
             request_headers = json.dumps(headers_dict, indent=2)
 
-            # Get request metadata
-            source_ip = request.httprequest.environ.get(
-                'REMOTE_ADDR', 'unknown')
+            source_ip = request.httprequest.environ.get('REMOTE_ADDR', 'unknown')
             user_agent = request.httprequest.environ.get('HTTP_USER_AGENT', '')
             full_url = request.httprequest.url
+            total_size = len(raw_bytes) if raw_bytes else (
+                len(request_body.encode('utf-8')) if request_body else 0)
 
-            # Calculate payload size
-            total_size = len(request_body.encode(
-                'utf-8')) if request_body else 0
-
-            # Extract webhook metadata from request body if it's JSON
+            payload = None
             webhook_type = None
             event_type = None
-
-            send_msg, sender_id = "", ""
             if request_body:
                 try:
-                    if request.httprequest.content_type and 'application/json' in request.httprequest.content_type:
-                        payload = json.loads(request_body)
-                        if isinstance(payload, dict):
-                            webhook_type = payload.get(
-                                'type', payload.get('webhook_type'))
-                            event_type = payload.get(
-                                'event', payload.get('event_type'))
-
-                            send_msg = payload.get(
-                                'message', {}).get('text', '')
-                            sender_id = payload.get('sender', {}).get('id', '')
+                    payload = json.loads(request_body)
+                    if isinstance(payload, dict):
+                        webhook_type = payload.get('type', payload.get('webhook_type'))
+                        event_type = payload.get('event', payload.get('event_type'))
+                        if payload.get('object'):
+                            webhook_type = webhook_type or payload.get('object')
                 except (json.JSONDecodeError, TypeError):
-                    pass  # Not JSON or invalid JSON, that's okay
+                    payload = None
 
-            # Store webhook in database
-            webhook_vals = {
+            webhook = request.env['chatbot.webhook.log'].sudo().create({
                 'json_data': request_body,
                 'http_method': http_method,
                 'query_params': json.dumps(query_params, indent=2) if query_params else '',
@@ -768,60 +795,202 @@ class ChatbotController(http.Controller):
                 'webhook_type': webhook_type,
                 'event_type': event_type,
                 'payload_size': total_size,
-                'status': 'received'
-            }
-
-            webhook = request.env['chatbot.webhook.log'].sudo().create(
-                webhook_vals)
-
+                'merchant': merchant or False,
+                'status': 'received',
+            })
             _logger.info(
-                f"📨 WEBHOOK: {http_method} request stored as {webhook.webhook_id} from {source_ip}")
+                "WEBHOOK: %s stored as %s merchant=%s from %s",
+                http_method, webhook.webhook_id, merchant, source_ip)
 
-            try:
-                merchant = query_params.get('merchant', '') if query_params else ''
-                if send_msg and sender_id and merchant:
-                    def _process_webhook_message(env,send_msg, sender_id, source_ip, user_agent, merchant):
-                        # Process the message using chatbot service
-                        chatbot_service: ChatbotService = ChatbotServiceFactory.get_service(
-                            provider=merchant, env=env)
-                        chatbot_service.chat(
-                            send_msg, session_id=sender_id, user_ip=source_ip, user_agent=user_agent, zalo_sender_id=sender_id)
+            if merchant == 'facebook' and http_method == 'GET':
+                return self._facebook_subscription_check(query_params, webhook, cors)
 
+            if merchant not in ('zalo', 'facebook'):
+                webhook.write({
+                    'status': 'ignored',
+                    'processing_notes': 'Missing or unknown merchant',
+                })
+                return request.make_response("", status=200, headers=cors)
 
-                    # _process_webhook_message(send_msg=send_msg, sender_id=sender_id, source_ip=source_ip, user_agent=user_agent, merchant=merchant)
-                    with ThreadPoolExecutor(max_workers=3) as executor:
-                        executor.submit(_process_webhook_message, env=request.env, send_msg=send_msg, sender_id=sender_id, source_ip=source_ip, user_agent=user_agent, merchant=merchant)
+            if merchant == 'facebook':
+                return self._handle_facebook_webhook(
+                    webhook, payload, raw_bytes, signature_header,
+                    source_ip, user_agent, cors)
 
-                    _logger.info(
-                        f"Processed webhook message from sender {sender_id} in background thread.")
-            
-            except Exception as e:
-                _logger.error(f"Error processing webhook data: {str(e)}")
-
-            # Return HTTP 200 OK status (no text content)
-            return request.make_response(
-                "",  # Empty response body
-                status=200,
-                headers=[
-                    ('Access-Control-Allow-Origin', '*'),
-                    ('Access-Control-Allow-Methods',
-                     'GET, POST, PUT, DELETE, PATCH, OPTIONS'),
-                    ('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-                ]
-            )
+            return self._handle_zalo_webhook(
+                webhook, payload, source_ip, user_agent, cors)
 
         except Exception as e:
             _logger.error(
-                f"❌ WEBHOOK ERROR: Failed to process {request.httprequest.method} webhook: {str(e)}")
-
-            # Even on error, still return 200 OK as many webhook services expect this
+                "WEBHOOK ERROR: Failed to process %s webhook: %s",
+                request.httprequest.method, e)
             return request.make_response(
-                "",  # Empty response body
-                status=200,
-                headers=[
-                    ('Access-Control-Allow-Origin', '*')
-                ]
+                "", status=200, headers=[('Access-Control-Allow-Origin', '*')])
+
+    def _facebook_subscription_check(self, query_params, webhook, cors):
+        cfg = request.env['chatbot.config'].sudo()
+        mode = query_params.get('hub.mode') or query_params.get('hub_mode') or ''
+        token = query_params.get('hub.verify_token') or query_params.get('hub_verify_token') or ''
+        challenge = query_params.get('hub.challenge') or query_params.get('hub_challenge') or ''
+        enabled = cfg._is_facebook_enabled()
+        expected = cfg._get_facebook_verify_token() or ''
+        if mode == 'subscribe' and enabled and expected and hmac.compare_digest(str(token), str(expected)):
+            webhook.write({
+                'status': 'processed',
+                'processed_at': fields.Datetime.now(),
+                'processing_notes': 'Facebook subscription check ok',
+            })
+            return request.make_response(
+                challenge, status=200,
+                headers=cors + [('Content-Type', 'text/plain')])
+        webhook.write({
+            'status': 'error',
+            'error_message': 'Facebook subscription check failed',
+        })
+        return request.make_response("", status=403, headers=cors)
+
+    def _verify_facebook_signature(self, raw_bytes, signature_header, app_secret):
+        if not signature_header or not app_secret:
+            return False
+        if signature_header.startswith('sha256='):
+            provided = signature_header[7:]
+        else:
+            provided = signature_header
+        expected = hmac.new(
+            app_secret.encode('utf-8'), raw_bytes or b'', hashlib.sha256
+        ).hexdigest()
+        return hmac.compare_digest(provided, expected)
+
+    def _iter_facebook_events(self, payload, page_id):
+        if not isinstance(payload, dict) or payload.get('object') != 'page':
+            return
+        for entry in payload.get('entry') or []:
+            for ev in entry.get('messaging') or []:
+                if not isinstance(ev, dict):
+                    continue
+                msg = ev.get('message') or {}
+                if msg.get('is_echo'):
+                    yield ('ignored', 'echo', ev)
+                    continue
+                text = (msg.get('text') or '').strip() if isinstance(msg, dict) else ''
+                if not text:
+                    yield ('ignored', 'non-text', ev)
+                    continue
+                recipient = (ev.get('recipient') or {}).get('id')
+                if page_id and recipient and str(recipient) != str(page_id):
+                    yield ('ignored', 'page-id-mismatch', ev)
+                    continue
+                sender = (ev.get('sender') or {}).get('id')
+                yield ('text', None, {
+                    'sender_id': sender,
+                    'text': text,
+                    'mid': msg.get('mid'),
+                })
+
+    def _handle_facebook_webhook(self, webhook, payload, raw_bytes, signature_header,
+                                 source_ip, user_agent, cors):
+        cfg = request.env['chatbot.config'].sudo()
+        if not cfg._is_facebook_enabled() or not cfg._is_facebook_configured():
+            webhook.write({
+                'status': 'ignored',
+                'processing_notes': 'Facebook disabled or unconfigured',
+            })
+            return request.make_response("", status=200, headers=cors)
+
+        app_secret = cfg._get_facebook_app_secret()
+        if not self._verify_facebook_signature(raw_bytes, signature_header, app_secret):
+            webhook.write({
+                'status': 'error',
+                'error_message': 'Invalid Facebook signature',
+            })
+            return request.make_response("", status=200, headers=cors)
+
+        validator = request.env['chatbot.security.validator'].sudo()
+        notes = []
+        processed = 0
+        send_error = None
+        page_id = cfg._get_facebook_page_id()
+        for kind, reason, data in self._iter_facebook_events(payload, page_id):
+            if kind != 'text':
+                notes.append(reason or 'ignored')
+                continue
+            sender_id = data.get('sender_id')
+            text = data.get('text') or ''
+            mid = data.get('mid')
+            is_valid, cleaned, error = validator.validate_message_content(text)
+            if not is_valid or not sender_id:
+                notes.append(error or 'invalid-text')
+                continue
+            service = ChatbotServiceFactory.get_service(
+                provider='facebook', env=request.env)
+            service.chat(
+                cleaned,
+                session_id=sender_id,
+                user_ip=source_ip,
+                user_agent=user_agent,
+                facebook_sender_id=sender_id,
+                external_message_id=mid,
             )
+            processed += 1
+            if getattr(service, 'last_send_status', None):
+                send_error = service.last_send_status
+
+        if send_error:
+            webhook.write({
+                'status': 'error',
+                'processed_at': fields.Datetime.now(),
+                'error_message': 'Facebook outbound send failed: %s' % send_error,
+                'processing_notes': '; '.join(notes) or False,
+            })
+        elif processed:
+            webhook.write({
+                'status': 'processed',
+                'processed_at': fields.Datetime.now(),
+                'processing_notes': '; '.join(notes) or False,
+            })
+        else:
+            webhook.write({
+                'status': 'ignored',
+                'processing_notes': '; '.join(notes) or 'No text events',
+            })
+        return request.make_response("", status=200, headers=cors)
+
+    def _handle_zalo_webhook(self, webhook, payload, source_ip, user_agent, cors):
+        send_msg, sender_id = '', ''
+        if isinstance(payload, dict):
+            message = payload.get('message') or {}
+            sender = payload.get('sender') or {}
+            if isinstance(message, dict):
+                send_msg = message.get('text') or ''
+            if isinstance(sender, dict):
+                sender_id = sender.get('id') or ''
+        if not (send_msg and sender_id):
+            webhook.write({
+                'status': 'ignored',
+                'processing_notes': 'Zalo payload missing text or sender',
+            })
+            return request.make_response("", status=200, headers=cors)
+        try:
+            service = ChatbotServiceFactory.get_service(
+                provider='zalo', env=request.env)
+            service.chat(
+                send_msg,
+                session_id=sender_id,
+                user_ip=source_ip,
+                user_agent=user_agent,
+                zalo_sender_id=sender_id,
+            )
+            webhook.write({
+                'status': 'processed',
+                'processed_at': fields.Datetime.now(),
+            })
+        except Exception as e:
+            _logger.error("Error processing Zalo webhook: %s", e)
+            webhook.write({
+                'status': 'error',
+                'error_message': str(e),
+            })
+        return request.make_response("", status=200, headers=cors)
 
     @http.route('/isd_chatbot/webhook', type='http', auth='public', methods=['OPTIONS'], csrf=False)
     def webhook_options(self, **kwargs):
