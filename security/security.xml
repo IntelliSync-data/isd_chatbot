@@ -19,20 +19,20 @@
             <field name="implied_ids" eval="[(4, ref('group_chatbot_guest'))]"/>
         </record>
         
-        <!-- Chatbot Editor Group -->
+        <!-- Chatbot Editor Group - separate branch from User: Q&A Configuration only -->
         <record id="group_chatbot_editor" model="res.groups">
             <field name="name">Chatbot Editor</field>
             <field name="category_id" ref="base.module_category_services"/>
-            <field name="comment">Access to customer inquiries and conversations but not webhook logs or statistics</field>
-            <field name="implied_ids" eval="[(4, ref('group_chatbot_user'))]"/>
+            <field name="comment">Access to Q&amp;A Configuration only. Does not include customer inquiries or conversations.</field>
+            <field name="implied_ids" eval="[(4, ref('group_chatbot_guest'))]"/>
         </record>
-        
-        <!-- Chatbot Manager Group -->
+
+        <!-- Chatbot Manager Group - combines User (inquiries/conversations) and Editor (Q&A config) -->
         <record id="group_chatbot_manager" model="res.groups">
             <field name="name">Chatbot Manager</field>
             <field name="category_id" ref="base.module_category_services"/>
-            <field name="comment">Full access to all chatbot features including configuration, webhook logs, and statistics</field>
-            <field name="implied_ids" eval="[(4, ref('group_chatbot_editor'))]"/>
+            <field name="comment">Sees all customer inquiries and conversations plus Q&amp;A Configuration. Not webhook logs/statistics or advanced configuration.</field>
+            <field name="implied_ids" eval="[(4, ref('group_chatbot_user')), (4, ref('group_chatbot_editor'))]"/>
         </record>
         
         <!-- Chatbot Admin Group -->
@@ -59,6 +59,21 @@
         <record id="rule_inquiry_manager" model="ir.rule">
             <field name="name">Inquiry: Manager sees all</field>
             <field name="model_id" ref="model_customer_inquiry"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_chatbot_manager'))]"/>
+        </record>
+
+        <!-- Record Rules: Conversation visibility (mirrors Inquiry visibility via customer_inquiry_id) -->
+        <record id="rule_conversation_user" model="ir.rule">
+            <field name="name">Conversation: User sees own assigned inquiry's conversations</field>
+            <field name="model_id" ref="model_chatbot_conversation"/>
+            <field name="domain_force">[('customer_inquiry_id.assigned_user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_chatbot_user'))]"/>
+        </record>
+
+        <record id="rule_conversation_manager" model="ir.rule">
+            <field name="name">Conversation: Manager sees all</field>
+            <field name="model_id" ref="model_chatbot_conversation"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_chatbot_manager'))]"/>
         </record>

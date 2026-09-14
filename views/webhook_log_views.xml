@@ -169,6 +169,7 @@
         <field name="name">Webhook Logs</field>
         <field name="res_model">chatbot.webhook.log</field>
         <field name="view_mode">list,form</field>
+        <field name="path">chatbot-webhook-logs</field>
         <field name="context">{
             'search_default_filter_week': 1,
             'search_default_group_status': 1
@@ -190,6 +191,7 @@
         <field name="name">Webhook Statistics</field>
         <field name="res_model">chatbot.webhook.log</field>
         <field name="view_mode">graph,pivot</field>
+        <field name="path">chatbot-webhook-stats</field>
         <field name="context">{
             'search_default_filter_month': 1
         }</field>

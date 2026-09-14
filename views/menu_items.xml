@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Main Menu - Visible to User and above -->
-    <menuitem id="menu_chatbot_main" 
-              name="Chatbot" 
-              sequence="100" 
-              web_icon="isd_chatbot,static/description/icon.png"
-              groups="group_chatbot_user"/>
+    <!-- Main Menu - no groups restriction: Odoo auto-hides it when the user
+         cannot see any of its children (User, Editor, Manager or Admin branch) -->
+    <menuitem id="menu_chatbot_main"
+              name="Chatbot"
+              sequence="100"
+              web_icon="isd_chatbot,static/description/icon.png"/>
     
     <!-- Configuration Menu - Manager and Editor -->
     <menuitem id="menu_chatbot_config" 
@@ -60,7 +60,7 @@
               sequence="16"
               groups="group_chatbot_admin"/>
     
-    <!-- API Documentation Menu - Editor and above -->
+    <!-- API Documentation Menu - Admin only -->
     <menuitem id="menu_inquiry_api_doc"
               name="Inquiry API"
               parent="menu_chatbot_config"
@@ -68,11 +68,11 @@
               sequence="20"
               groups="group_chatbot_admin"/>
 
-    <!-- Integration Menu - Manager only -->
+    <!-- Integration Menu - Admin only -->
     <menuitem id="menu_chatbot_integration"
               name="Integration"
               parent="menu_chatbot_main"
               sequence="30"
-              groups="group_chatbot_manager"/>
+              groups="group_chatbot_admin"/>
 </odoo>
 

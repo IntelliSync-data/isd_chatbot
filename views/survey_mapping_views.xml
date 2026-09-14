@@ -55,6 +55,7 @@
         <field name="name">Survey Field Mappings</field>
         <field name="res_model">survey.question.mapping</field>
         <field name="view_mode">list,form</field>
+        <field name="path">chatbot-survey-mappings</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first survey field mapping
