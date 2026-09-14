@@ -21,5 +21,6 @@
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_inquiry_api_doc_wizard_form"/>
         <field name="target">new</field>
+        <field name="path">chatbot-inquiry-api</field>
     </record>
 </odoo>

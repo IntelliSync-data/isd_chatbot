@@ -266,6 +266,7 @@
         <field name="name">Q and A Configuration</field>
         <field name="res_model">chatbot.config</field>
         <field name="view_mode">list,form</field>
+        <field name="path">chatbot-qa-config</field>
         <field name="domain">[('name', '!=', 'Default Settings')]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -317,6 +318,7 @@ action = {
         <field name="res_model">chatbot.config</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_chatbot_global_settings_form"/>
+        <field name="path">chatbot-global-settings</field>
         <field name="domain">[('name', '=', 'Default Settings')]</field>
         <field name="context">{'create': False, 'form_view_initial_mode': 'edit'}</field>
         <field name="target">current</field>
