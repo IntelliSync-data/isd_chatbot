@@ -10,7 +10,7 @@
             <list string="Customer Inquiries" decoration-info="state=='new'" decoration-success="state=='booked'">
                 <field name="create_date"/>
                 <field name="source_id" optional="show"/>
-                <field name="conversation_session_id" optional="show"/>
+                <field name="conversation_session_id" optional="hide"/>
                 <field name="message" optional="show"/>
                 <field name="name"/>
                 <field name="email"/>
