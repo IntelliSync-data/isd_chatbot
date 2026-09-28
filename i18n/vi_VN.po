@@ -1235,3 +1235,8 @@ msgstr "Thống kê Webhook"
 #: model:ir.cron,name:isd_chatbot.cron_cleanup_webhook_logs
 msgid "Chatbot: Cleanup Old Webhook Logs"
 msgstr "Chatbot: Dọn dẹp nhật ký Webhook cũ"
+
+#. module: isd_chatbot
+#: model:ir.model.fields,field_description:isd_chatbot.field_customer_inquiry__create_date_local
+msgid "Created On"
+msgstr "Ngày tạo"

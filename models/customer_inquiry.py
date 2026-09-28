@@ -2,7 +2,8 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
+import pytz
 import json
 import logging
 
@@ -61,6 +62,39 @@ class CustomerInquiry(models.Model):
     hide_analyze_button = fields.Boolean('Hide Analyze', compute='_compute_button_visibility')
     hide_save_to_crm_button = fields.Boolean('Hide Save to CRM', compute='_compute_button_visibility')
     hide_invite_user_button = fields.Boolean('Hide Invite User', compute='_compute_button_visibility')
+
+    # create_date is stored in UTC, which makes a plain domain on it select the
+    # wrong day for anyone east of Greenwich. This is the same date read in the
+    # user timezone, so the Today filter means the day the user is living in.
+    create_date_local = fields.Date(
+        string='Created On', compute='_compute_create_date_local',
+        search='_search_create_date_local')
+
+    @api.depends('create_date')
+    def _compute_create_date_local(self):
+        for record in self:
+            record.create_date_local = fields.Datetime.context_timestamp(
+                record, record.create_date).date() if record.create_date else False
+
+    def _search_create_date_local(self, operator, value):
+        """Turn a local calendar day into the UTC window it really covers"""
+        tz = pytz.timezone(self.env.context.get('tz') or self.env.user.tz or 'UTC')
+
+        def boundary(day, end_of_day=False):
+            naive = datetime.combine(day, time.max if end_of_day else time.min)
+            return fields.Datetime.to_string(
+                tz.localize(naive).astimezone(pytz.utc).replace(tzinfo=None))
+
+        day = fields.Date.to_date(value)
+        if operator == '=':
+            return [('create_date', '>=', boundary(day)),
+                    ('create_date', '<=', boundary(day, end_of_day=True))]
+        if operator in ('>=', '>'):
+            return [('create_date', operator, boundary(day, end_of_day=(operator == '>')))]
+        if operator in ('<=', '<'):
+            return [('create_date', operator, boundary(day, end_of_day=(operator == '<=')))]
+        raise UserError(
+            _("Operator %s is not supported on the creation date filter.") % operator)
 
     @api.constrains('email', 'phone')
     def _check_contact_info(self):
