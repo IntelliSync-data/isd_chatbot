@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ISD Chatbot',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.1.0',
     'summary': 'Intelligent Chatbot for Odoo 18.0 with CRM and Calendar Integration',
     'description': """
         This module provides an intelligent chatbot for Odoo 18.0, allowing

@@ -24,7 +24,9 @@
             <field name="name">Chatbot Editor</field>
             <field name="category_id" ref="base.module_category_services"/>
             <field name="comment">Access to Q&amp;A Configuration only. Does not include customer inquiries or conversations.</field>
-            <field name="implied_ids" eval="[(4, ref('group_chatbot_guest'))]"/>
+            <!-- (3, user) takes off the link versions before 2026-09-14 made, which (4)
+                 alone never removed: Editor sits beside User, not above it -->
+            <field name="implied_ids" eval="[(3, ref('group_chatbot_user')), (4, ref('group_chatbot_guest'))]"/>
         </record>
 
         <!-- Chatbot Manager Group - combines User (inquiries/conversations) and Editor (Q&A config) -->
@@ -42,6 +44,10 @@
             <field name="comment">Full access including advanced configuration (Survey Mappings, Inquiry API, Inquiry Sources)</field>
             <field name="implied_ids" eval="[(4, ref('group_chatbot_manager'))]"/>
         </record>
+
+        <!-- Rebuild the access page of the user form, so the roles show as the
+             dropdown models/res_groups.py asks for (also on upgrade) -->
+        <function model="res.groups" name="_update_user_groups_view"/>
 
         <!-- Assign Admin group to System Admin -->
         <record id="base.user_admin" model="res.users">
